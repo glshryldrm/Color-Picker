@@ -7,6 +7,9 @@ public class GameAssets : MonoBehaviour
 {
     private static GameAssets instance;
     public GameObject gridPrefab;
+    public GameObject pawnPrefab;
+    public GameObject particlePrefab;
+
     public static GameAssets Instance
     {
         get
@@ -20,8 +23,6 @@ public class GameAssets : MonoBehaviour
             return instance;
         }
     }
-
-
     private void Awake()
     {
 

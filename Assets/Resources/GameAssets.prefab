@@ -46,3 +46,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   gridPrefab: {fileID: 8358015066033950699, guid: fdaf0773fc2839a4cb16f4237f8cad2b,
     type: 3}
+  pawnPrefab: {fileID: 1962486901351804734, guid: 92f113dc46530df44823e1b3a88ac801,
+    type: 3}
+  particlePrefab: {fileID: 7810245235446376228, guid: f74938086aaf0e341bd4ebecafccfc35,
+    type: 3}

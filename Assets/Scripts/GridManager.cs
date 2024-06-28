@@ -5,9 +5,9 @@ using UnityEditor;
 
 public class GridManager : MonoBehaviour
 {
-    [SerializeField] int height;
-    [SerializeField] int width;
-    public int numberOfGrids;
+    public int height;
+    public int width;
+    [HideInInspector] public int numberOfGrids;
 
     public GridCell[,] gridMatrix;
     private void OnDrawGizmos()
@@ -29,7 +29,7 @@ public class GridManager : MonoBehaviour
             }
         }
     }
-    public void CalculateGrid()
+    public void SpawnGrid()
     {
         gridMatrix = new GridCell[height, width];
         numberOfGrids = height * width;
@@ -42,6 +42,7 @@ public class GridManager : MonoBehaviour
             {
                 Vector3 vector = new Vector3((transform.position.x + x) - offsetX, 0.5f, (transform.position.z + z) - offsetZ);
                 GameObject g = Instantiate(GameAssets.Instance.gridPrefab, vector, Quaternion.identity);
+                g.GetComponent<GridCell>().vector = vector;
                 gridMatrix[x, z] = g.GetComponent<GridCell>();
                
             }
