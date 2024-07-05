@@ -7,7 +7,7 @@ public class GridCell : MonoBehaviour
     public int x;
     public int z;
     public Vector3 vector;
-    Color gridCellColor;
+    public Color gridCellColor;
     private MeshRenderer meshRenderer;
 
     public Color GridCellColor { get => gridCellColor; set => gridCellColor = value; }
@@ -22,21 +22,19 @@ public class GridCell : MonoBehaviour
         meshRenderer = GetComponent<MeshRenderer>();
     }
 
-    public void SetColor(Color color)
+    public void SetColor()
     {
-        if (meshRenderer != null)
+        if (GetComponent<MeshRenderer>() != null)
         {
             foreach (Material mat in meshRenderer.materials)
             {
                 if (mat.HasProperty("_BaseColor"))
                 {
-                    mat.SetColor("_BaseColor", color);
-                    gridCellColor = color;
+                    mat.SetColor("_BaseColor", gridCellColor);
                 }
                 else
                 {
-                    mat.color = color;
-                    gridCellColor = color;
+                    mat.color = gridCellColor;
                 }
             }
         }

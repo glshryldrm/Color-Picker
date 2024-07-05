@@ -18,32 +18,32 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
-        //FindGridsAndSetColor();
-        //FindTargetGridColor();
-        Invoke("FindGridsAndSetColor", 0.01f);
-        Invoke("FindTargetGridColor", 0.1f);
+        FindTargetGridColor();
+        StartCoroutine(ShowTargetGrid());
+        
 
     }
     private void Awake()
     {
         gridManager.SpawnGrid();
+        FindGridsColor();
         QualitySettings.vSyncCount = 0;
         Application.targetFrameRate = 60;
     }
-    void FindGridsAndSetColor()
+    void FindGridsColor()
     {
-        GridCell[] gridCells = FindObjectsOfType<GridCell>();
         colorList = colorManager.GenerateColorScale(colorManager.baseColor, gridManager.numberOfGrids);
-        if (gridCells.Length == gridManager.numberOfGrids)
+        int x = 0;
+        if (colorList.Count == gridManager.numberOfGrids && x<=colorList.Count)
         {
-            for (int i = 0; i < gridCells.Length; i++)
+            for (int i = 0; i < gridManager.height; i++)
             {
-                gridCells[i].SetColor(colorList[i]);
+                for (int j = 0; j < gridManager.width; j++)
+                {
+                    gridManager.gridMatrix[i, j].GridCellColor = colorList[x];
+                    x++;
+                }
             }
-        }
-        else
-        {
-            Debug.Log("gridcells ve numberofgrids sayisi esit degil.");
         }
     }
     void FindTargetGridColor()
@@ -84,8 +84,10 @@ public class GameManager : MonoBehaviour
 
         Debug.Log("% : " + similarity * 100);
     }
-    void ShowTargetGrid()
+    private IEnumerator ShowTargetGrid()
     {
+        targetGrid.SetColor();
 
+        yield return new WaitForSeconds(1);
     }
 }
