@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
 
 public class GameManager : MonoBehaviour
 {
@@ -9,9 +10,13 @@ public class GameManager : MonoBehaviour
     [SerializeField] int x;
     [SerializeField] int z;
     [SerializeField] GameObject playerPawn;
+    [SerializeField] TextMeshProUGUI similarityText;
+    [SerializeField] LevelManager levelManager;
     [HideInInspector] public GridCell targetGrid;
     [HideInInspector] public GridCell selectedGrid;
-
+    
+    float similarity;
+    
 
 
     List<Color> colorList = new List<Color>();
@@ -20,7 +25,6 @@ public class GameManager : MonoBehaviour
     {
         FindTargetGridColor();
         StartCoroutine(ShowTargetGrid());
-        
 
     }
     private void Awake()
@@ -32,9 +36,10 @@ public class GameManager : MonoBehaviour
     }
     void FindGridsColor()
     {
+        InputManager.touchCheck = false;
         colorList = colorManager.GenerateColorScale(colorManager.baseColor, gridManager.numberOfGrids);
         int x = 0;
-        if (colorList.Count == gridManager.numberOfGrids && x<=colorList.Count)
+        if (colorList.Count == gridManager.numberOfGrids && x <= colorList.Count)
         {
             for (int i = 0; i < gridManager.height; i++)
             {
@@ -45,6 +50,17 @@ public class GameManager : MonoBehaviour
                 }
             }
         }
+    }
+    void SetGridsColor()
+    {
+        for (int i = 0; i < gridManager.height; i++)
+        {
+            for (int j = 0; j < gridManager.width; j++)
+            {
+                gridManager.gridMatrix[j, i].SetColor();
+            }
+        }
+        InputManager.touchCheck = true;
     }
     void FindTargetGridColor()
     {
@@ -80,14 +96,30 @@ public class GameManager : MonoBehaviour
         float distance = Mathf.Sqrt(rDiff * rDiff + gDiff * gDiff + bDiff * bDiff);
 
         // Mesafeyi benzerlik oranýna çevir (0 ile 1 arasýnda)
-        float similarity = 1.0f - (distance / Mathf.Sqrt(3.0f));
-
-        Debug.Log("% : " + similarity * 100);
+        similarity = (1.0f - (distance / Mathf.Sqrt(3.0f))) * 100;
+        similarity = Mathf.Ceil(similarity);
+        similarityText.text = "Similarity = %" + similarity;
+        SituationBySimilarity();
     }
     private IEnumerator ShowTargetGrid()
     {
         targetGrid.SetColor();
 
         yield return new WaitForSeconds(1);
+        targetGrid.SetColor(Color.white);
+
+        yield return new WaitForSeconds(1);
+        SetGridsColor();
+    }
+    private void SituationBySimilarity()
+    {
+        if (similarity >= 70)
+        {
+            levelManager.NextLevel();
+        }
+        else
+        {
+            levelManager.ReloadLevel();
+        }
     }
 }

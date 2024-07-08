@@ -9,22 +9,11 @@ public class GridCell : MonoBehaviour
     public Vector3 vector;
     public Color gridCellColor;
     private MeshRenderer meshRenderer;
-
     public Color GridCellColor { get => gridCellColor; set => gridCellColor = value; }
-
-    public GridCell(int x, int z)
-    {
-        this.x = x;
-        this.z = z;
-    }
-    void Start()
-    {
-        meshRenderer = GetComponent<MeshRenderer>();
-    }
 
     public void SetColor()
     {
-        if (GetComponent<MeshRenderer>() != null)
+        if ((meshRenderer = GetComponent<MeshRenderer>()) != null)
         {
             foreach (Material mat in meshRenderer.materials)
             {
@@ -38,6 +27,26 @@ public class GridCell : MonoBehaviour
                 }
             }
         }
+        else
+            Debug.Log("meshrenderer bulunamadý");
     }
-    
+    public void SetColor(Color color)
+    {
+        if ((meshRenderer = GetComponent<MeshRenderer>()) != null)
+        {
+            foreach (Material mat in meshRenderer.materials)
+            {
+                if (mat.HasProperty("_BaseColor"))
+                {
+                    mat.SetColor("_BaseColor", color);
+                }
+                else
+                {
+                    mat.color = color;
+                }
+            }
+        }
+        else
+            Debug.Log("meshrenderer bulunamadý");
+    }
 }
