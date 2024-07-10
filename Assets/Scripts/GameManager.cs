@@ -29,7 +29,8 @@ public class GameManager : MonoBehaviour
     }
     private void Awake()
     {
-        gridManager.SpawnGrid();
+        //gridManager.SpawnGrid();
+        gridManager.CreateHexGrid();
         FindGridsColor();
         QualitySettings.vSyncCount = 0;
         Application.targetFrameRate = 60;

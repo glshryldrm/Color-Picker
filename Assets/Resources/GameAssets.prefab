@@ -28,7 +28,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -44,7 +44,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bc3c1e2998e4f1646ac9832651a3b120, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gridPrefab: {fileID: 8358015066033950699, guid: fdaf0773fc2839a4cb16f4237f8cad2b,
+  gridPrefab: {fileID: 8482277536319090902, guid: 2a7e71f0369ddf049949ff18c6bb22db,
     type: 3}
   pawnPrefab: {fileID: 1962486901351804734, guid: 92f113dc46530df44823e1b3a88ac801,
     type: 3}

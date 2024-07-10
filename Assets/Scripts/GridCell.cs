@@ -9,11 +9,18 @@ public class GridCell : MonoBehaviour
     public Vector3 vector;
     public Color gridCellColor;
     private MeshRenderer meshRenderer;
+    public Hex hexCoordinates;
+
+    public void Initialize(Hex coordinates)
+    {
+        hexCoordinates = coordinates;
+        transform.name = $"Hex ({coordinates.q}, {coordinates.r})";
+    }
     public Color GridCellColor { get => gridCellColor; set => gridCellColor = value; }
 
     public void SetColor()
     {
-        if ((meshRenderer = GetComponent<MeshRenderer>()) != null)
+        if ((meshRenderer = GetComponentInChildren<MeshRenderer>()) != null)
         {
             foreach (Material mat in meshRenderer.materials)
             {
