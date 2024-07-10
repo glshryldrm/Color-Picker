@@ -252,7 +252,7 @@ GameObject:
   - component: {fileID: 107869505}
   - component: {fileID: 107869506}
   - component: {fileID: 107869507}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Managers
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -307,7 +307,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7de527adfd8820b409cc3931883895ae, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  baseColor: {r: 0, g: 0.59030724, b: 1, a: 0}
+  color1: {r: 1, g: 0, b: 0, a: 0}
+  color2: {r: 0, g: 0.14014602, b: 1, a: 0}
+  color3: {r: 0, g: 1, b: 0.07483244, a: 0}
+  color4: {r: 0.937063, g: 1, b: 0, a: 0}
   gridManager: {fileID: 20816819}
 --- !u!114 &107869506
 MonoBehaviour:

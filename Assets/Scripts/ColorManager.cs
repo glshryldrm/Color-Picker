@@ -4,57 +4,62 @@ using UnityEngine;
 
 public class ColorManager : MonoBehaviour
 {
-    public Color baseColor;
+    public Color color1;
+    public Color color2;
+    public Color color3;
+    public Color color4;
     [SerializeField] GridManager gridManager;
 
-    public List<Color> GenerateColorScale(Color baseColor, int steps)
+    public List<Color> GenerateColorScale(int steps)
     {
         List<Color> colorList = new List<Color>();
 
-        if (steps % 2 == 0)
+        // Her renk çifti arasýnda geçiþ yapmak için adým sayýsýný hesapla
+        int segmentSteps = steps / 3;
+        float segmentFraction = 1f / segmentSteps;
+
+        // Ýlk iki renk arasýnda geçiþ
+        for (int i = 0; i < segmentSteps; i++)
         {
-            // Çift sayý adým: Yarý sayýsýný kullan
-            int halfSteps = steps / 2;
-
-            // Add lighter shades
-            for (int i = 0; i < halfSteps; i++)
-            {
-                float t = (float)i / halfSteps;
-                Color color = Color.Lerp(Color.white, baseColor, t);
-                colorList.Add(color);
-            }
-
-            // Add darker shades
-            for (int i = 0; i < halfSteps; i++)
-            {
-                float t = (float)i / halfSteps;
-                Color color = Color.Lerp(baseColor, Color.black, t);
-                colorList.Add(color);
-            }
+            float t = i * segmentFraction;
+            Color color = Color.Lerp(color1, color2, t);
+            colorList.Add(color);
         }
-        else
+
+        // Ýkinci ve üçüncü renk arasýnda geçiþ
+        for (int i = 0; i < segmentSteps; i++)
         {
-            // Tek sayý adým: Merkezi renk ekleyin
-            int halfSteps = steps / 2;
-
-            // Add lighter shades
-            for (int i = 0; i < halfSteps; i++)
-            {
-                float t = (float)i / halfSteps;
-                Color color = Color.Lerp(Color.white, baseColor, t);
-                colorList.Add(color);
-            }
-
-            // Add darker shades
-            for (int i = 0; i < halfSteps + 1; i++)
-            {
-                float t = (float)i / halfSteps;
-                Color color = Color.Lerp(baseColor, Color.black, t);
-                colorList.Add(color);
-            }
+            float t = i * segmentFraction;
+            Color color = Color.Lerp(color2, color3, t);
+            colorList.Add(color);
         }
+
+        // Üçüncü ve dördüncü renk arasýnda geçiþ
+        for (int i = 0; i < segmentSteps; i++)
+        {
+            float t = i * segmentFraction;
+            Color color = Color.Lerp(color3, color4, t);
+            colorList.Add(color);
+        }
+
+        // Son rengi ekle
+        colorList.Add(color4);
 
         return colorList;
     }
+    public Color CalculateCellColor(int x, int y)
+    {
+        // Normalleþtirilmiþ x ve y pozisyonlarý
+        float normalizedX = (float)x / (gridManager.width - 1);
+        float normalizedY = (float)y / (gridManager.height - 1);
 
+        // Üst kenar için renk geçiþi (color1 -> color2)
+        Color topColor = Color.Lerp(color1, color2, normalizedX);
+
+        // Alt kenar için renk geçiþi (color3 -> color4)
+        Color bottomColor = Color.Lerp(color3, color4, normalizedX);
+
+        // Nihai renk (üst ve alt kenarlar arasýnda geçiþ)
+        return Color.Lerp(bottomColor, topColor, normalizedY);
+    }
 }

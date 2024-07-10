@@ -38,15 +38,16 @@ public class GameManager : MonoBehaviour
     void FindGridsColor()
     {
         InputManager.touchCheck = false;
-        colorList = colorManager.GenerateColorScale(colorManager.baseColor, gridManager.numberOfGrids);
+        //colorList = colorManager.GenerateColorScale(gridManager.numberOfGrids);
         int x = 0;
-        if (colorList.Count == gridManager.numberOfGrids && x <= colorList.Count)
+        //if (colorList.Count == gridManager.numberOfGrids && x <= colorList.Count)
         {
             for (int i = 0; i < gridManager.height; i++)
             {
                 for (int j = 0; j < gridManager.width; j++)
                 {
-                    gridManager.gridMatrix[i, j].GridCellColor = colorList[x];
+                    gridManager.gridMatrix[i, j].GridCellColor = colorManager.CalculateCellColor(i, j);
+                    //gridManager.gridMatrix[i, j].GridCellColor = colorList[x];
                     x++;
                 }
             }
