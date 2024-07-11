@@ -23,15 +23,15 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
-        FindTargetGridColor();
-        StartCoroutine(ShowTargetGrid());
+        //FindTargetGridColor();
+        //StartCoroutine(ShowTargetGrid());
 
     }
     private void Awake()
     {
         //gridManager.SpawnGrid();
         gridManager.CreateHexGrid();
-        FindGridsColor();
+        //FindGridsColor();
         QualitySettings.vSyncCount = 0;
         Application.targetFrameRate = 60;
     }
@@ -46,7 +46,7 @@ public class GameManager : MonoBehaviour
             {
                 for (int j = 0; j < gridManager.height; j++)
                 {
-                    gridManager.gridMatrix[i, j].GridCellColor = colorManager.CalculateCellColor(i, j);
+                    //gridManager.gridMatrix[i, j].GridCellColor = colorManager.CalculateCellColor(i, j);
                     //gridManager.gridMatrix[i, j].GridCellColor = colorList[x];
                     x++;
                 }
@@ -59,7 +59,7 @@ public class GameManager : MonoBehaviour
         {
             for (int j = 0; j < gridManager.height; j++)
             {
-                gridManager.gridMatrix[i, j].SetColor();
+                //gridManager.gridMatrix[i, j].SetColor();
             }
         }
         InputManager.touchCheck = true;
@@ -68,7 +68,7 @@ public class GameManager : MonoBehaviour
     {
         if (x < gridManager.width && z < gridManager.height)
         {
-            targetGrid = gridManager.gridMatrix[x, z];
+            //targetGrid = gridManager.gridMatrix[x, z];
             Debug.Log(targetGrid.GridCellColor);
         }
         else
