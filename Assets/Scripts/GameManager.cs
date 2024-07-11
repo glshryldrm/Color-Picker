@@ -42,9 +42,9 @@ public class GameManager : MonoBehaviour
         int x = 0;
         //if (colorList.Count == gridManager.numberOfGrids && x <= colorList.Count)
         {
-            for (int i = 0; i < gridManager.height; i++)
+            for (int i = 0; i < gridManager.width; i++)
             {
-                for (int j = 0; j < gridManager.width; j++)
+                for (int j = 0; j < gridManager.height; j++)
                 {
                     gridManager.gridMatrix[i, j].GridCellColor = colorManager.CalculateCellColor(i, j);
                     //gridManager.gridMatrix[i, j].GridCellColor = colorList[x];
@@ -55,11 +55,11 @@ public class GameManager : MonoBehaviour
     }
     void SetGridsColor()
     {
-        for (int i = 0; i < gridManager.height; i++)
+        for (int i = 0; i < gridManager.width; i++)
         {
-            for (int j = 0; j < gridManager.width; j++)
+            for (int j = 0; j < gridManager.height; j++)
             {
-                gridManager.gridMatrix[j, i].SetColor();
+                gridManager.gridMatrix[i, j].SetColor();
             }
         }
         InputManager.touchCheck = true;
@@ -81,9 +81,10 @@ public class GameManager : MonoBehaviour
     public void PlacePawn(GridCell selectedGrid)
     {
         this.selectedGrid = selectedGrid;
-        selectedGrid.vector.y = 1.5f;
+        selectedGrid.vector.y = 2f;
+        colorManager.SetParticleColor(selectedGrid);
         playerPawn.transform.position = selectedGrid.vector;
-        Instantiate(GameAssets.Instance.particlePrefab, selectedGrid.vector, Quaternion.identity);
+        
         InputManager.touchCheck = false;
 
     }

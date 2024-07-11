@@ -62,4 +62,11 @@ public class ColorManager : MonoBehaviour
         // Nihai renk (üst ve alt kenarlar arasýnda geçiþ)
         return Color.Lerp(bottomColor, topColor, normalizedY);
     }
+    public void SetParticleColor(GridCell gridCell)
+    {
+        GameObject fx = Instantiate(GameAssets.Instance.particlePrefab, gridCell.vector, Quaternion.identity);
+        var mainModule = fx.GetComponent<ParticleSystem>().main;
+        mainModule.startColor = gridCell.gridCellColor;
+        GameObject.Destroy(fx, mainModule.startLifetime.constant + 1f);
+    }
 }

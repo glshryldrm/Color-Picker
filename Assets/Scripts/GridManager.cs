@@ -8,9 +8,45 @@ public class GridManager : MonoBehaviour
     public int height;
     public float hexRadius;
     [HideInInspector] public int numberOfGrids;
+    public GameObject gizmosPrefab;
 
     public GridCell[,] gridMatrix;
 
+    private void OnDrawGizmos()
+    {
+        MeshRenderer meshRenderer = gizmosPrefab.GetComponentInChildren<MeshRenderer>();
+        float hexWidth = meshRenderer.bounds.size.x;
+        float hexHeight = meshRenderer.bounds.size.z;
+
+        // Radius hesapla
+        hexRadius = hexWidth / Mathf.Sqrt(3);
+
+        // Grid'in ortalanması için gerekli ofsetler
+        float offsetX = (width - 1) * hexWidth * 0.75f * 0.5f;
+        float offsetZ = (height - 1) * hexHeight * 0.5f;
+
+        for (int x = 0; x < width; x++)
+        {
+            for (int y = 0; y < height; y++)
+            {
+                Hex hexCoordinates = new Hex(x, y);
+                Vector3 position = HexToPosition(hexCoordinates, hexWidth, hexHeight);
+                position.x -= offsetX; // X ekseninde ortala
+                position.z -= offsetZ; // Z ekseninde ortala
+                position.y = 1f;
+                Gizmos.DrawWireMesh(gizmosPrefab.GetComponentInChildren<MeshFilter>().sharedMesh,
+                    position,
+                    this.transform.rotation,
+                    gizmosPrefab.GetComponent<Transform>().localScale);
+                Gizmos.color = Color.white;
+                GUIStyle style = new GUIStyle();
+                style.alignment = TextAnchor.MiddleCenter;
+                style.normal.textColor = Color.black;
+                UnityEditor.Handles.Label(position, x.ToString() + " - " + y.ToString(), style);
+                //burada kodu yorum satirina aldim cunku diger turlu apk alamiyordum
+            }
+        }
+    }
     public void CreateHexGrid()
     {
         MeshRenderer meshRenderer = GameAssets.Instance.gridPrefab.GetComponentInChildren<MeshRenderer>();
@@ -35,6 +71,7 @@ public class GridManager : MonoBehaviour
                 Vector3 position = HexToPosition(hexCoordinates, hexWidth, hexHeight);
                 position.x -= offsetX; // X ekseninde ortala
                 position.z -= offsetZ; // Z ekseninde ortala
+                position.y = 1f;
                 GameObject hex = Instantiate(GameAssets.Instance.gridPrefab, position, Quaternion.identity);
                 hex.GetComponent<GridCell>().Initialize(hexCoordinates);
                 hex.GetComponent<GridCell>().vector = position;

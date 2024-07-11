@@ -27,10 +27,12 @@ public class GridCell : MonoBehaviour
                 if (mat.HasProperty("_BaseColor"))
                 {
                     mat.SetColor("_BaseColor", gridCellColor);
+                    gridCellColor.a = 1;
                 }
                 else
                 {
                     mat.color = gridCellColor;
+                    gridCellColor.a = 1;
                 }
             }
         }
@@ -39,17 +41,19 @@ public class GridCell : MonoBehaviour
     }
     public void SetColor(Color color)
     {
-        if ((meshRenderer = GetComponent<MeshRenderer>()) != null)
+        if ((meshRenderer = GetComponentInChildren<MeshRenderer>()) != null)
         {
             foreach (Material mat in meshRenderer.materials)
             {
                 if (mat.HasProperty("_BaseColor"))
                 {
                     mat.SetColor("_BaseColor", color);
+                    gridCellColor.a = 1;
                 }
                 else
                 {
                     mat.color = color;
+                    gridCellColor.a = 1;
                 }
             }
         }

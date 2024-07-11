@@ -152,10 +152,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: effc8b3b8ce469d49b52068b37f1d211, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  width: 10
-  height: 10
-  hexRadius: 1
-  numberOfGrids: 0
+  width: 4
+  height: 5
+  hexRadius: 1.1547005
+  numberOfGrids: 100
+  gizmosPrefab: {fileID: 8482277536319090902, guid: 2a7e71f0369ddf049949ff18c6bb22db,
+    type: 3}
 --- !u!4 &20816820
 Transform:
   m_ObjectHideFlags: 0
@@ -164,13 +166,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 20816818}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: 0.7071068, y: 0, z: 0, w: 0.7071068}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 90, y: 0, z: 0}
 --- !u!1 &28653015
 GameObject:
   m_ObjectHideFlags: 0
@@ -273,8 +275,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   gridManager: {fileID: 20816819}
   colorManager: {fileID: 107869505}
-  x: 2
-  z: 3
+  x: 0
+  z: 0
   playerPawn: {fileID: 159211186}
   similarityText: {fileID: 1193136669}
   levelManager: {fileID: 107869507}
@@ -432,13 +434,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 330585543}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.63749254, y: -0, z: -0, w: 0.77045655}
-  m_LocalPosition: {x: 0, y: 15, z: -4.35}
+  m_LocalRotation: {x: 0.5584282, y: -0, z: -0, w: 0.8295529}
+  m_LocalPosition: {x: 0, y: 13.95, z: -7.75}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 79.21, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 67.894, y: 0, z: 0}
 --- !u!114 &330585547
 MonoBehaviour:
   m_ObjectHideFlags: 0

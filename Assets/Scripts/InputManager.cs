@@ -45,7 +45,7 @@ public class InputManager : MonoBehaviour
                     {
                         if (hit.collider != null)
                         {
-                            gameManager.PlacePawn(hit.collider.GetComponent<GridCell>());
+                            gameManager.PlacePawn(hit.collider.GetComponentInParent<GridCell>());
                             gameManager.CalculateColorSimilarity(gameManager.targetGrid.GridCellColor, gameManager.selectedGrid.GridCellColor);
                             touch.phase = TouchPhase.Ended;
                         }
