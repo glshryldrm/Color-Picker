@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Scrtwpns.Mixbox;
 
 public class ColorManager : MonoBehaviour
 {
@@ -10,57 +11,30 @@ public class ColorManager : MonoBehaviour
     public Color color4;
     [SerializeField] GridManager gridManager;
 
-    public List<Color> GenerateColorScale(int steps)
+    public Color CalculateCellColor(int q, int r)
     {
-        List<Color> colorList = new List<Color>();
+        // Grid'in radius'u
+        int radius = gridManager.radius;
 
-        // Her renk çifti arasýnda geçiþ yapmak için adým sayýsýný hesapla
-        int segmentSteps = steps / 3;
-        float segmentFraction = 1f / segmentSteps;
+        // Axial koordinatlarý normalleþtirme
+        float normalizedQ = (float)(q + radius) / (2 * radius);
+        float normalizedR = (float)(r + radius) / (2 * radius);
 
-        // Ýlk iki renk arasýnda geçiþ
-        for (int i = 0; i < segmentSteps; i++)
-        {
-            float t = i * segmentFraction;
-            Color color = Color.Lerp(color1, color2, t);
-            colorList.Add(color);
-        }
+        // Üst kenar için renk geçiþi (topLeftColor -> topRightColor)
+        Color topColor = Color.Lerp(color1, color2, normalizedR);
 
-        // Ýkinci ve üçüncü renk arasýnda geçiþ
-        for (int i = 0; i < segmentSteps; i++)
-        {
-            float t = i * segmentFraction;
-            Color color = Color.Lerp(color2, color3, t);
-            colorList.Add(color);
-        }
-
-        // Üçüncü ve dördüncü renk arasýnda geçiþ
-        for (int i = 0; i < segmentSteps; i++)
-        {
-            float t = i * segmentFraction;
-            Color color = Color.Lerp(color3, color4, t);
-            colorList.Add(color);
-        }
-
-        // Son rengi ekle
-        colorList.Add(color4);
-
-        return colorList;
-    }
-    public Color CalculateCellColor(int x, int y)
-    {
-        // Normalleþtirilmiþ x ve y pozisyonlarý
-        float normalizedX = (float)x / (gridManager.width - 1);
-        float normalizedY = (float)y / (gridManager.height - 1);
-
-        // Üst kenar için renk geçiþi (color1 -> color2)
-        Color topColor = Color.Lerp(color1, color2, normalizedX);
-
-        // Alt kenar için renk geçiþi (color3 -> color4)
-        Color bottomColor = Color.Lerp(color3, color4, normalizedX);
+        // Alt kenar için renk geçiþi (bottomLeftColor -> bottomRightColor)
+        Color bottomColor = Color.Lerp(color3, color4, normalizedR);
 
         // Nihai renk (üst ve alt kenarlar arasýnda geçiþ)
-        return Color.Lerp(bottomColor, topColor, normalizedY);
+        //Color finalColor = Color.Lerp(bottomColor, topColor, normalizedR);
+        Color finalColor = Mixbox.Lerp(topColor, bottomColor, normalizedQ);
+
+
+        // Debug.Log ile ara deðerleri kontrol et
+        Debug.Log($"q: {q}, r: {r}, normalizedQ: {normalizedQ}, normalizedR: {normalizedR}, topColor: {topColor}, bottomColor: {bottomColor}, finalColor: {finalColor}");
+
+        return finalColor;
     }
     public void SetParticleColor(GridCell gridCell)
     {

@@ -5,38 +5,32 @@ using UnityEngine;
 public class GridManager : MonoBehaviour
 {
     public int radius;
-    public int width;
-    public int height;
     public float hexRadius;
-    [HideInInspector] public int numberOfGrids;
+    public float hexWidth;
+    public float hexHeight;
     public GameObject gizmosPrefab;
 
     //public GridCell[,] gridMatrix;
     public Dictionary<Hex, GridCell> gridMatrix;
 
+    private static readonly Hex[] axialDirectionVectors = {
+        new Hex(+1, 0), new Hex(+1, -1), new Hex(0, -1),
+        new Hex(-1, 0), new Hex(-1, +1), new Hex(0, +1)
+    };
     private void OnDrawGizmos()
     {
         MeshRenderer meshRenderer = gizmosPrefab.GetComponentInChildren<MeshRenderer>();
-        float hexWidth = meshRenderer.bounds.size.x;
-        float hexHeight = meshRenderer.bounds.size.z;
-
-        // Radius hesapla
-        hexRadius = hexWidth / Mathf.Sqrt(3);
-
-        // Grid'in ortalanması için gerekli ofsetler
-        float offsetX = (width - 1) * hexWidth * 0.75f * 0.5f;
-        float offsetZ = (height - 1) * hexHeight * 0.5f;
+        hexWidth = meshRenderer.bounds.size.x;
+        hexHeight = meshRenderer.bounds.size.z;
 
         hexRadius = hexWidth / Mathf.Sqrt(3);
-
+        
         for (int q = -radius; q <= radius; q++)
         {
             for (int r = Mathf.Max(-radius, -q - radius); r <= Mathf.Min(radius, -q + radius); r++)
             {
-                if (q == 0 && r == 0) continue; // Skip the origin
-
                 Hex hexCoordinates = new Hex(q, r);
-                Vector3 position = HexToPosition(hexCoordinates, hexWidth, hexHeight);
+                Vector3 position = HexToPosition(hexCoordinates);
                 Gizmos.DrawWireMesh(gizmosPrefab.GetComponentInChildren<MeshFilter>().sharedMesh,
                     position,
                     this.transform.rotation,
@@ -54,23 +48,20 @@ public class GridManager : MonoBehaviour
         if (GameAssets.Instance == null || GameAssets.Instance.gridPrefab == null) return;
 
         MeshRenderer meshRenderer = GameAssets.Instance.gridPrefab.GetComponentInChildren<MeshRenderer>();
-        float hexWidth = meshRenderer.bounds.size.x;
-        float hexHeight = meshRenderer.bounds.size.z;
+        hexWidth = meshRenderer.bounds.size.x;
+        hexHeight = meshRenderer.bounds.size.z;
 
         // Calculate radius
         hexRadius = hexWidth / Mathf.Sqrt(3);
 
         gridMatrix = new Dictionary<Hex, GridCell>();
-
-        // Create the surrounding grids
+        // Create the surrounding 
         for (int q = -radius; q <= radius; q++)
         {
             for (int r = Mathf.Max(-radius, -q - radius); r <= Mathf.Min(radius, -q + radius); r++)
             {
-                if (q == 0 && r == 0) continue; // Skip the origin
-
                 Hex hexCoordinates = new Hex(q, r);
-                Vector3 position = HexToPosition(hexCoordinates, hexWidth, hexHeight);
+                Vector3 position = HexToPosition(hexCoordinates);
                 GameObject hex = Instantiate(GameAssets.Instance.gridPrefab, position, Quaternion.identity);
                 hex.GetComponent<GridCell>().Initialize(hexCoordinates);
                 hex.GetComponent<GridCell>().vector = position;
@@ -79,14 +70,13 @@ public class GridManager : MonoBehaviour
             }
         }
     }
-
-    Vector3 HexToPosition(Hex hex, float hexWidth, float hexHeight)
+    Vector3 HexToPosition(Hex hex)
     {
-        float x = hexWidth * (3.0f / 2.0f * hex.q);
-        //float z = hex.r * hexHeight + (hex.q % 2 == 0 ? 0 : hexHeight * 0.5f); // Apply row-based offset
-        float z = hexHeight * (Mathf.Sqrt(3.0f) * (hex.r + hex.q / 2.0f));
+        float x = hexWidth * 0.75f * hex.q;
+        float z = hexHeight * (Mathf.Sqrt(3.0f) / 2.0f * hex.q + Mathf.Sqrt(3.0f) * hex.r) * hexRadius;
         return new Vector3(x, 0, z);
     }
+
     /*
     public void CreateHexGrid()
     {
@@ -128,17 +118,10 @@ public class GridManager : MonoBehaviour
         return new Vector3(x, 0, z);
     }
     */
-
-    Vector3 HexToWorld(int q, int r)
-    {
-        MeshRenderer meshRenderer = GameAssets.Instance.gridPrefab.GetComponentInChildren<MeshRenderer>();
-        float x = meshRenderer.bounds.size.x * (3.0f / 2.0f * q);
-        float z = meshRenderer.bounds.size.z * (Mathf.Sqrt(3.0f) * (r + q / 2.0f));
-        return new Vector3(x, 0, z);
-    }
 }
 
-    public class Hex
+[System.Serializable]
+public class Hex
 {
     public int q;
     public int r;
@@ -148,7 +131,19 @@ public class GridManager : MonoBehaviour
         this.q = q;
         this.r = r;
     }
-
+    public bool Equals(Hex hex)
+    {
+        if (hex.q == this.q && hex.r == this.r)
+        {
+            return true;
+        }
+        else
+            return false;
+    }
+    public override int GetHashCode()
+    {
+        return q.GetHashCode() ^ r.GetHashCode();
+    }
     public Cube ToCube()
     {
         int s = -q - r;

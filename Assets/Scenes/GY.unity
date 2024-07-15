@@ -152,11 +152,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: effc8b3b8ce469d49b52068b37f1d211, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  radius: 2
-  width: 0
-  height: 0
-  hexRadius: 1.1547005
-  numberOfGrids: 100
+  radius: 4
+  hexRadius: 0.57735026
+  hexWidth: 1
+  hexHeight: 0.8660256
   gizmosPrefab: {fileID: 8482277536319090902, guid: 2a7e71f0369ddf049949ff18c6bb22db,
     type: 3}
 --- !u!4 &20816820
@@ -276,8 +275,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   gridManager: {fileID: 20816819}
   colorManager: {fileID: 107869505}
-  x: 0
-  z: 0
+  hex:
+    q: 0
+    r: 0
   playerPawn: {fileID: 159211186}
   similarityText: {fileID: 1193136669}
   levelManager: {fileID: 107869507}
@@ -310,10 +310,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7de527adfd8820b409cc3931883895ae, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  color1: {r: 1, g: 0, b: 0, a: 0}
-  color2: {r: 0, g: 0.14014602, b: 1, a: 0}
+  color1: {r: 1, g: 0.032585718, b: 0, a: 0}
+  color2: {r: 0, g: 0.061501026, b: 1, a: 0}
   color3: {r: 0, g: 1, b: 0.07483244, a: 0}
-  color4: {r: 0.937063, g: 1, b: 0, a: 0}
+  color4: {r: 0.97622836, g: 1, b: 0, a: 0}
   gridManager: {fileID: 20816819}
 --- !u!114 &107869506
 MonoBehaviour:

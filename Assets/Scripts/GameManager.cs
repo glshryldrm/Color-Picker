@@ -7,84 +7,69 @@ public class GameManager : MonoBehaviour
 {
     [SerializeField] GridManager gridManager;
     [SerializeField] ColorManager colorManager;
-    [SerializeField] int x;
-    [SerializeField] int z;
+    [SerializeField] Hex hex;
     [SerializeField] GameObject playerPawn;
     [SerializeField] TextMeshProUGUI similarityText;
     [SerializeField] LevelManager levelManager;
     [HideInInspector] public GridCell targetGrid;
     [HideInInspector] public GridCell selectedGrid;
-    
+
     float similarity;
-    
-
-
-    List<Color> colorList = new List<Color>();
 
     private void Start()
     {
-        //FindTargetGridColor();
-        //StartCoroutine(ShowTargetGrid());
+        FindTargetGridColor();
+        StartCoroutine(ShowTargetGrid());
 
     }
     private void Awake()
     {
-        //gridManager.SpawnGrid();
         gridManager.CreateHexGrid();
-        //FindGridsColor();
+        FindGridsColor();
         QualitySettings.vSyncCount = 0;
         Application.targetFrameRate = 60;
     }
     void FindGridsColor()
     {
         InputManager.touchCheck = false;
-        //colorList = colorManager.GenerateColorScale(gridManager.numberOfGrids);
         int x = 0;
-        //if (colorList.Count == gridManager.numberOfGrids && x <= colorList.Count)
+
+        foreach (KeyValuePair<Hex, GridCell> pair in gridManager.gridMatrix)
         {
-            for (int i = 0; i < gridManager.width; i++)
-            {
-                for (int j = 0; j < gridManager.height; j++)
-                {
-                    //gridManager.gridMatrix[i, j].GridCellColor = colorManager.CalculateCellColor(i, j);
-                    //gridManager.gridMatrix[i, j].GridCellColor = colorList[x];
-                    x++;
-                }
-            }
+
+            //pair.Value.GridCellColor = colorList[x];
+            pair.Value.GridCellColor = colorManager.CalculateCellColor(pair.Key.q, pair.Key.r);
+            x++;
         }
     }
     void SetGridsColor()
     {
-        for (int i = 0; i < gridManager.width; i++)
+        foreach (KeyValuePair<Hex, GridCell> pair in gridManager.gridMatrix)
         {
-            for (int j = 0; j < gridManager.height; j++)
-            {
-                //gridManager.gridMatrix[i, j].SetColor();
-            }
+            pair.Value.SetColor();
+            InputManager.touchCheck = true;
         }
-        InputManager.touchCheck = true;
     }
     void FindTargetGridColor()
     {
-        if (x < gridManager.width && z < gridManager.height)
+        foreach (KeyValuePair<Hex, GridCell> pair in gridManager.gridMatrix)
         {
-            //targetGrid = gridManager.gridMatrix[x, z];
-            Debug.Log(targetGrid.GridCellColor);
-        }
-        else
-        {
-            Debug.Log("targetGrid grid uzunlugunun disinda!!");
-            InputManager.touchCheck = false;
+            if (pair.Key.Equals(hex))
+            {
+                targetGrid = pair.Value;
+                targetGrid.SetColor();
+                InputManager.touchCheck = true;
+            }
         }
 
     }
     public void PlacePawn(GridCell selectedGrid)
     {
         this.selectedGrid = selectedGrid;
-        selectedGrid.vector.y = 2f;
+        selectedGrid.vector.y = 1f;
         colorManager.SetParticleColor(selectedGrid);
         playerPawn.transform.position = selectedGrid.vector;
-        
+
         InputManager.touchCheck = false;
 
     }
