@@ -5,8 +5,6 @@ using Scrtwpns.Mixbox;
 
 public class ColorManager : MonoBehaviour
 {
-    private int currentColorIndex = 0;
-    private int nextColorIndex = 1;
     [SerializeField] List<Color> colors;
     [SerializeField] GridManager gridManager;
 

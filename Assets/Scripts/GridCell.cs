@@ -10,6 +10,7 @@ public class GridCell : MonoBehaviour
     [HideInInspector] public  Color color;
     private MeshRenderer meshRenderer;
     [HideInInspector] public Hex hexCoordinates;
+    public bool isEmpty = true;
 
     public void Initialize(Hex coordinates)
     {

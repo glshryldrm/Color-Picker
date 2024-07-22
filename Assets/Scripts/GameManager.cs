@@ -70,29 +70,26 @@ public class GameManager : MonoBehaviour
         playerPawn.transform.position = selectedGrid.vector;
         SoundManager.PlaySound(GameAssets.SoundType.bubble);
         InputManager.touchCheck = false;
-
+        selectedGrid.isEmpty = false;
     }
     public void CalculateColorSimilarity(Color color1, Color color2)
     {
-        // Renkler arasýndaki farklarý hesapla
         float rDiff = color1.r - color2.r;
         float gDiff = color1.g - color2.g;
         float bDiff = color1.b - color2.b;
 
-        // Renk farkýnýn karelerini topla
         float distance = Mathf.Sqrt(rDiff * rDiff + gDiff * gDiff + bDiff * bDiff);
 
-        // Mesafeyi benzerlik oranýna çevir (0 ile 1 arasýnda)
         similarity = (1.0f - (distance / Mathf.Sqrt(3.0f))) * 100;
         similarity = Mathf.Ceil(similarity);
         similarityText.text = "Similarity = %" + similarity;
-        Invoke(nameof(ShowTargetGrid), 1f);
+        Invoke(nameof(SituationBySimilarity), 1f);
     }
     private IEnumerator ShowTargetGrid()
     {
         targetGrid.SetColor();
 
-        yield return new WaitForSeconds(1f);
+        yield return new WaitForSeconds(3f);
         targetGrid.SetColor(Color.white);
 
         yield return new WaitForSeconds(1f);
