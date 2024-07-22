@@ -34,7 +34,7 @@ public class GameManager : MonoBehaviour
         InputManager.touchCheck = false;
         int x = 0;
 
-        foreach (KeyValuePair<Hex, GridCell> pair in gridManager.gridMatrix)
+        foreach (KeyValuePair<Hex, GridCell> pair in gridManager.gridDictionary)
         {
 
             //pair.Value.GridCellColor = colorList[x];
@@ -44,7 +44,7 @@ public class GameManager : MonoBehaviour
     }
     void SetGridsColor()
     {
-        foreach (KeyValuePair<Hex, GridCell> pair in gridManager.gridMatrix)
+        foreach (KeyValuePair<Hex, GridCell> pair in gridManager.gridDictionary)
         {
             pair.Value.SetColor();
             InputManager.touchCheck = true;
@@ -52,13 +52,12 @@ public class GameManager : MonoBehaviour
     }
     void FindTargetGridColor()
     {
-        foreach (KeyValuePair<Hex, GridCell> pair in gridManager.gridMatrix)
+        foreach (KeyValuePair<Hex, GridCell> pair in gridManager.gridDictionary)
         {
             if (pair.Key.Equals(hex))
             {
                 targetGrid = pair.Value;
                 targetGrid.SetColor();
-                InputManager.touchCheck = true;
             }
         }
 
@@ -69,7 +68,7 @@ public class GameManager : MonoBehaviour
         selectedGrid.vector.y = 1f;
         colorManager.SetParticleColor(selectedGrid);
         playerPawn.transform.position = selectedGrid.vector;
-
+        SoundManager.PlaySound(GameAssets.SoundType.bubble);
         InputManager.touchCheck = false;
 
     }
@@ -87,23 +86,24 @@ public class GameManager : MonoBehaviour
         similarity = (1.0f - (distance / Mathf.Sqrt(3.0f))) * 100;
         similarity = Mathf.Ceil(similarity);
         similarityText.text = "Similarity = %" + similarity;
-        SituationBySimilarity();
+        Invoke(nameof(ShowTargetGrid), 1f);
     }
     private IEnumerator ShowTargetGrid()
     {
         targetGrid.SetColor();
 
-        yield return new WaitForSeconds(1);
+        yield return new WaitForSeconds(1f);
         targetGrid.SetColor(Color.white);
 
-        yield return new WaitForSeconds(1);
+        yield return new WaitForSeconds(1f);
         SetGridsColor();
+        InputManager.touchCheck = true;
     }
     private void SituationBySimilarity()
     {
         if (similarity >= 70)
         {
-            levelManager.NextLevel();
+            levelManager.LoadNextLevel();
         }
         else
         {

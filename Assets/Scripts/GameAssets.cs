@@ -9,12 +9,16 @@ public class GameAssets : MonoBehaviour
     public GameObject gridPrefab;
     public GameObject pawnPrefab;
     public GameObject particlePrefab;
-
+    public enum SoundType
+    {
+        click,
+        bubble
+    }
+    public List<Sound> sounds = new List<Sound>();
     public static GameAssets Instance
     {
         get
         {
-
             if (instance == null)
             {
                 instance = (Instantiate(Resources.Load("GameAssets")) as GameObject).GetComponent<GameAssets>();
@@ -25,7 +29,6 @@ public class GameAssets : MonoBehaviour
     }
     private void Awake()
     {
-
         if (instance != null && instance != this)
         {
             Destroy(this.gameObject);
@@ -33,5 +36,18 @@ public class GameAssets : MonoBehaviour
         }
         instance = this;
         DontDestroyOnLoad(this.gameObject);
+    }
+    
+}
+[System.Serializable]
+public class Sound
+{
+    public GameAssets.SoundType soundType;
+    public AudioClip audio;
+
+    Sound(GameAssets.SoundType soundType, AudioClip audio)
+    {
+        soundType = this.soundType;
+        audio = this.audio;
     }
 }

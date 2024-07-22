@@ -147,6 +147,12 @@ Camera:
     type: 3}
   m_PrefabInstance: {fileID: 3116979006692717012}
   m_PrefabAsset: {fileID: 0}
+--- !u!95 &508316283 stripped
+Animator:
+  m_CorrespondingSourceObject: {fileID: 2957354460576868323, guid: 1cdb12b7a1bc599408f8e98fec853f22,
+    type: 3}
+  m_PrefabInstance: {fileID: 6994670144421763764}
+  m_PrefabAsset: {fileID: 0}
 --- !u!114 &1193136669 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 6609304249955087659, guid: 1cdb12b7a1bc599408f8e98fec853f22,
@@ -457,12 +463,6 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 92f113dc46530df44823e1b3a88ac801, type: 3}
---- !u!1 &1837621822 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 2774726007036772003, guid: 1cdb12b7a1bc599408f8e98fec853f22,
-    type: 3}
-  m_PrefabInstance: {fileID: 6994670144421763764}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &147121307235046608
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -745,9 +745,14 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 375372869293938300, guid: b5baa2cf1b4a99c47a2d8d83e4cd92e5,
         type: 3}
+      propertyPath: transition
+      value: 
+      objectReference: {fileID: 508316283}
+    - target: {fileID: 375372869293938300, guid: b5baa2cf1b4a99c47a2d8d83e4cd92e5,
+        type: 3}
       propertyPath: levelTransition
       value: 
-      objectReference: {fileID: 1837621822}
+      objectReference: {fileID: 0}
     - target: {fileID: 1486546083418321032, guid: b5baa2cf1b4a99c47a2d8d83e4cd92e5,
         type: 3}
       propertyPath: gridManager

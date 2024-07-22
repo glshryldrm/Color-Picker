@@ -48,7 +48,10 @@ MonoBehaviour:
   x: 0
   z: 0
   vector: {x: 0, y: 0, z: 0}
-  gridCellColor: {r: 0, g: 0, b: 0, a: 0}
+  color: {r: 0, g: 0, b: 0, a: 0}
+  hexCoordinates:
+    q: 0
+    r: 0
 --- !u!1001 &8712900956678564291
 PrefabInstance:
   m_ObjectHideFlags: 0

@@ -4,19 +4,19 @@ using UnityEngine;
 
 public class GridCell : MonoBehaviour
 {
-    public int x;
-    public int z;
-    public Vector3 vector;
-    public Color gridCellColor;
+    [HideInInspector] public int x;
+    [HideInInspector] public int z;
+    [HideInInspector] public Vector3 vector;
+    [HideInInspector] public  Color color;
     private MeshRenderer meshRenderer;
-    public Hex hexCoordinates;
+    [HideInInspector] public Hex hexCoordinates;
 
     public void Initialize(Hex coordinates)
     {
         hexCoordinates = coordinates;
         transform.name = $"Hex ({coordinates.q}, {coordinates.r})";
     }
-    public Color GridCellColor { get => gridCellColor; set => gridCellColor = value; }
+    public Color GridCellColor { get => color; set => color = value; }
 
     public void SetColor()
     {
@@ -26,13 +26,13 @@ public class GridCell : MonoBehaviour
             {
                 if (mat.HasProperty("_BaseColor"))
                 {
-                    mat.SetColor("_BaseColor", gridCellColor);
-                    gridCellColor.a = 1;
+                    mat.SetColor("_BaseColor", color);
+                    color.a = 1;
                 }
                 else
                 {
-                    mat.color = gridCellColor;
-                    gridCellColor.a = 1;
+                    mat.color = color;
+                    color.a = 1;
                 }
             }
         }
@@ -48,12 +48,12 @@ public class GridCell : MonoBehaviour
                 if (mat.HasProperty("_BaseColor"))
                 {
                     mat.SetColor("_BaseColor", color);
-                    gridCellColor.a = 1;
+                    this.color.a = 1;
                 }
                 else
                 {
                     mat.color = color;
-                    gridCellColor.a = 1;
+                    this.color.a = 1;
                 }
             }
         }

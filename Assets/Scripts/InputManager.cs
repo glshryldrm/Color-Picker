@@ -8,36 +8,25 @@ public class InputManager : MonoBehaviour
     [SerializeField] LayerMask layer;
     [SerializeField] GameManager gameManager;
     public static bool touchCheck = true;
-
-
     void Start()
     {
-
-        cam = Camera.main;
-        
+        cam = Camera.main;     
     }
-
-
     void Update()
     {
         PlacePawnWithRay();
     }
-
     private void PlacePawnWithRay()
     {
 
         if (touchCheck)
         {
             if (Input.touchCount > 0)
-            {
-                // Ýlk dokunma olayýný al
-
-                Touch touch = Input.GetTouch(0);
-
-                // Dokunma baþladýysa
+            {              
+               Touch touch = Input.GetTouch(0);
+              
                 if (touch.phase == TouchPhase.Began)
                 {
-
                     Ray ray = cam.ScreenPointToRay(touch.position);
                     RaycastHit hit;
 
