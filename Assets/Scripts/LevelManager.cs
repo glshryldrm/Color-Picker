@@ -7,77 +7,49 @@ using UnityEngine.UIElements;
 
 public class LevelManager : MonoBehaviour
 {
-    int sceneIndex, levelPassed; // bu deðiþkenleri kullanma
     public List<string> levels = new List<string>();
     public Animator transition;
     [SerializeField] bool loadLevelOnStart = false;
-
-    private void Start()
-    {
-        levelPassed = PlayerPrefs.GetInt("LevelPassed", 0); // current level adýnda bir deðiþende  level key oluþtur
-        sceneIndex = levelPassed;
-        if (loadLevelOnStart)
-        {
-            LoadSavedLevel();
-        }
-
-    }
+    string levelKey = "CurrentLevel";
     public void ReloadLevel()
     {
-        StartCoroutine(LoadLevel(sceneIndex));
+        StartCoroutine(LoadLevel(PlayerPrefs.GetInt(levelKey)));
     }
 
     public void LoadNextLevel()
     {
-        sceneIndex++;
+        int currentLevel = PlayerPrefs.GetInt(levelKey, 0);
+        int nextLevel = currentLevel + 1;
+        SaveCurrentLevel(levelKey, nextLevel);
+        StartCoroutine(LoadLevel(nextLevel));
+    }
 
-        if (sceneIndex >= levels.Count)
+    public IEnumerator LoadLevel(int level)
+    {
+        SaveCurrentLevel(levelKey, level);
+
+        if (level >= levels.Count)
         {
-            int randomIndex = Random.Range(0, levels.Count);
-            StartCoroutine(LoadLevel(randomIndex));
+            int randomLevel = Random.Range(0, levels.Count);
+            transition.SetTrigger("Start");
+
+            yield return new WaitForSeconds(1f);
+            SceneManager.LoadScene(levels[randomLevel]);
         }
         else
         {
-            StartCoroutine(LoadLevel(sceneIndex));
-            PlayerPrefs.SetInt("LevelPassed", sceneIndex);
+            transition.SetTrigger("Start");
+
+            yield return new WaitForSeconds(1f);
+            SceneManager.LoadScene(levels[level]);
         }
+
+
     }
 
-    public IEnumerator LoadLevel(int sceneIndex)
+    void SaveCurrentLevel(string levelKey, int level)
     {
-        transition.SetTrigger("Start");
-
-        yield return new WaitForSeconds(1f);
-
-        SceneManager.LoadScene(levels[sceneIndex]);
-    }
-
-    public void LoadMainMenu()
-    {
-        SceneManager.LoadScene("MainMenu");
-    }
-
-    public void LoadSpecificLevel(int levelIndex)
-    {
-        if (levelIndex < levels.Count)
-        {
-            SceneManager.LoadScene(levels[levelIndex]);
-            PlayerPrefs.SetInt("LevelPassed", levelIndex);
-        }
-        else
-        {
-            Debug.LogError("Level index out of bounds");
-        }
-    }
-    void LoadSavedLevel()
-    {
-        if (levelPassed < levels.Count)
-        {
-            SceneManager.LoadScene(levels[levelPassed]);
-        }
-        else
-        {
-            Debug.LogError("Level index out of bounds");
-        }
+        PlayerPrefs.SetInt(levelKey, level);
+        PlayerPrefs.Save();
     }
 }
