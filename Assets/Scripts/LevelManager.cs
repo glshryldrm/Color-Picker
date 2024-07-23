@@ -15,9 +15,10 @@ public class LevelManager : MonoBehaviour
     private void Start()
     {
         levelPassed = PlayerPrefs.GetInt("LevelPassed", 0); // current level adýnda bir deðiþende  level key oluþtur
+        sceneIndex = levelPassed;
         if (loadLevelOnStart)
         {
-            StartCoroutine(LoadLevel(levelPassed)); // playerPref kaydetmek için fonksiyon oluþtur
+            LoadSavedLevel();
         }
 
     }
@@ -28,26 +29,28 @@ public class LevelManager : MonoBehaviour
 
     public void LoadNextLevel()
     {
+        sceneIndex++;
+
         if (sceneIndex >= levels.Count)
         {
             int randomIndex = Random.Range(0, levels.Count);
             StartCoroutine(LoadLevel(randomIndex));
-            //SceneManager.LoadScene(levels[randomIndex])
         }
         else
         {
-            StartCoroutine(LoadLevel(sceneIndex + 1));
-            //SceneManager.LoadScene(levels[sceneIndex + 1]);
-            PlayerPrefs.SetInt("LevelPassed", sceneIndex + 1);
+            StartCoroutine(LoadLevel(sceneIndex));
+            PlayerPrefs.SetInt("LevelPassed", sceneIndex);
         }
     }
-    public IEnumerator LoadLevel(int sceneIndex) // bu fonksiyon üzerinde deðiþiklik yapma
-    {
-        transition.SetTrigger("Start");
+}
+public IEnumerator LoadLevel(int sceneIndex)
+{
+    transition.SetTrigger("Start");
 
-        yield return new WaitForSeconds(1f);
+    yield return new WaitForSeconds(1f);
 
-        SceneManager.LoadScene(levels[sceneIndex]);
+    SceneManager.LoadScene(levels[sceneIndex]);
+}
     }
     public void LoadMainMenu()
     {
