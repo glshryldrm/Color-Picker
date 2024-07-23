@@ -42,16 +42,16 @@ public class LevelManager : MonoBehaviour
             PlayerPrefs.SetInt("LevelPassed", sceneIndex);
         }
     }
-}
-public IEnumerator LoadLevel(int sceneIndex)
-{
-    transition.SetTrigger("Start");
 
-    yield return new WaitForSeconds(1f);
+    public IEnumerator LoadLevel(int sceneIndex)
+    {
+        transition.SetTrigger("Start");
 
-    SceneManager.LoadScene(levels[sceneIndex]);
-}
+        yield return new WaitForSeconds(1f);
+
+        SceneManager.LoadScene(levels[sceneIndex]);
     }
+
     public void LoadMainMenu()
     {
         SceneManager.LoadScene("MainMenu");

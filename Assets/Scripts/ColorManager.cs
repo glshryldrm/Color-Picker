@@ -47,19 +47,18 @@ public class ColorManager : MonoBehaviour
         Color topColor = Color.black;
         Color bottomColor = Color.black;
 
-        // Üst kenar için renk geçişi
-        for (int i = 0; i < colors.Count - 1; i++)
+
+        for (int i = 0; i < colors.Count / 2 - 1; i++)
         {
             topColor = Mixbox.Lerp(colors[i], colors[i + 1], rNorm);
         }
 
-        // Alt kenar için renk geçişi
-        for (int i = colors.Count - 1; i > 0; i--)
+        for (int i = colors.Count - 1; i >= colors.Count / 2 + 1; i--)
         {
             bottomColor = Mixbox.Lerp(colors[i], colors[i - 1], rNorm);
         }
 
-        // Nihai renk (üst ve alt kenarlar arasında geçiş)
+
         Color finalColor = Mixbox.Lerp(topColor, bottomColor, qNorm);
         return finalColor;
     }

@@ -85,6 +85,25 @@ public class GameManager : MonoBehaviour
         similarityText.text = "Similarity = %" + similarity;
         Invoke(nameof(SituationBySimilarity), 1f);
     }
+    public void CalculateDistancePercentage(GridCell targetGrid, GridCell selectedGrid)
+    {
+        float manhattanDistance = Mathf.Abs(selectedGrid.vector.x - targetGrid.vector.x) + Mathf.Abs(selectedGrid.vector.z - targetGrid.vector.z);
+        float maxManhattanDistance;
+        if (gridManager.gridShape == GridManager.GridShapes.hexGrid)
+        {
+            maxManhattanDistance = (gridManager.radius * 2);
+        }
+        else
+        {
+            maxManhattanDistance = gridManager.width + gridManager.height - 2;
+        }
+
+        similarity = (maxManhattanDistance - manhattanDistance) / maxManhattanDistance * 100;
+        similarity = Mathf.Ceil(similarity);
+        similarityText.text = "Similarity = %" + similarity;
+        Invoke(nameof(SituationBySimilarity), 1f);
+
+    }
     private IEnumerator ShowTargetGrid()
     {
         targetGrid.SetColor();
