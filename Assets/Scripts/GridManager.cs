@@ -36,6 +36,7 @@ public class GridManager : MonoBehaviour
                 {
                     Hex hexCoordinates = new Hex(q, r);
                     Vector3 position = HexToPosition(hexCoordinates);
+                    position.y = 0.5f;
                     Gizmos.DrawWireMesh(gizmosPrefab.GetComponentInChildren<MeshFilter>().sharedMesh,
                         position,
                         this.transform.rotation,
@@ -44,7 +45,7 @@ public class GridManager : MonoBehaviour
                     GUIStyle style = new GUIStyle();
                     style.alignment = TextAnchor.MiddleCenter;
                     style.normal.textColor = Color.black;
-                    UnityEditor.Handles.Label(position, q.ToString() + " - " + r.ToString(), style);
+                    //UnityEditor.Handles.Label(position, q.ToString() + " - " + r.ToString(), style);
                 }
             }
         }
@@ -62,6 +63,7 @@ public class GridManager : MonoBehaviour
                     Vector3 position = HexToPosition(hexCoordinates, hexWidth, hexHeight);
                     position.x -= offsetX; // X ekseninde ortala
                     position.z -= offsetZ; // Z ekseninde ortala
+                    position.y = 0.5f;
                     Gizmos.DrawWireMesh(gizmosPrefab.GetComponentInChildren<MeshFilter>().sharedMesh,
                         position,
                         this.transform.rotation,
@@ -70,7 +72,7 @@ public class GridManager : MonoBehaviour
                     GUIStyle style = new GUIStyle();
                     style.alignment = TextAnchor.MiddleCenter;
                     style.normal.textColor = Color.black;
-                    UnityEditor.Handles.Label(position, x.ToString() + " - " + y.ToString(), style);
+                    //UnityEditor.Handles.Label(position, x.ToString() + " - " + y.ToString(), style);
                     //burada kodu yorum satirina aldim cunku diger turlu apk alamiyordum
                 }
             }
@@ -99,6 +101,7 @@ public class GridManager : MonoBehaviour
                 {
                     Hex hexCoordinates = new Hex(q, r);
                     Vector3 position = HexToPosition(hexCoordinates);
+                    position.y = 0.5f;
                     GameObject hex = Instantiate(GameAssets.Instance.gridPrefab, position, Quaternion.identity);
                     hex.GetComponent<GridCell>().Initialize(hexCoordinates);
                     hex.GetComponent<GridCell>().vector = position;
@@ -122,6 +125,7 @@ public class GridManager : MonoBehaviour
                     Vector3 position = HexToPosition(hexCoordinates, hexWidth, hexHeight);
                     position.x -= offsetX; // X ekseninde ortala
                     position.z -= offsetZ; // Z ekseninde ortala
+                    position.y = 0.5f;
                     GameObject hex = Instantiate(GameAssets.Instance.gridPrefab, position, Quaternion.identity);
                     hex.GetComponent<GridCell>().Initialize(hexCoordinates);
                     hex.GetComponent<GridCell>().vector = position;

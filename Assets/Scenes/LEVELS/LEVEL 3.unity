@@ -147,7 +147,7 @@ Camera:
     type: 3}
   m_PrefabInstance: {fileID: 3116979006692717012}
   m_PrefabAsset: {fileID: 0}
---- !u!95 &1067701835 stripped
+--- !u!95 &508316283 stripped
 Animator:
   m_CorrespondingSourceObject: {fileID: 2957354460576868323, guid: 1cdb12b7a1bc599408f8e98fec853f22,
     type: 3}
@@ -730,16 +730,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: GridManager
       objectReference: {fileID: 0}
-    - target: {fileID: 7110576047749969749, guid: 1b9e584300787844fb8a3501da2d2bba,
-        type: 3}
-      propertyPath: radius
-      value: 5
-      objectReference: {fileID: 0}
-    - target: {fileID: 7110576047749969749, guid: 1b9e584300787844fb8a3501da2d2bba,
-        type: 3}
-      propertyPath: gridShape
-      value: 1
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -757,7 +747,12 @@ PrefabInstance:
         type: 3}
       propertyPath: transition
       value: 
-      objectReference: {fileID: 1067701835}
+      objectReference: {fileID: 508316283}
+    - target: {fileID: 375372869293938300, guid: b5baa2cf1b4a99c47a2d8d83e4cd92e5,
+        type: 3}
+      propertyPath: levelTransition
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 1486546083418321032, guid: b5baa2cf1b4a99c47a2d8d83e4cd92e5,
         type: 3}
       propertyPath: gridManager
@@ -825,11 +820,6 @@ PrefabInstance:
       objectReference: {fileID: 20816819}
     - target: {fileID: 7987706960245087968, guid: b5baa2cf1b4a99c47a2d8d83e4cd92e5,
         type: 3}
-      propertyPath: GridAnimator
-      value: 
-      objectReference: {fileID: 1067701835}
-    - target: {fileID: 7987706960245087968, guid: b5baa2cf1b4a99c47a2d8d83e4cd92e5,
-        type: 3}
       propertyPath: similarityText
       value: 
       objectReference: {fileID: 1193136669}
@@ -851,11 +841,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 876393927215004356, guid: 03b51cc6055998e43914d1c35ae3c185,
-        type: 3}
-      propertyPath: m_LocalScale.y
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 876393927215004356, guid: 03b51cc6055998e43914d1c35ae3c185,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -904,21 +889,6 @@ PrefabInstance:
     - target: {fileID: 876393927215004356, guid: 03b51cc6055998e43914d1c35ae3c185,
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4267845147669896207, guid: 03b51cc6055998e43914d1c35ae3c185,
-        type: 3}
-      propertyPath: m_Convex
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 4267845147669896207, guid: 03b51cc6055998e43914d1c35ae3c185,
-        type: 3}
-      propertyPath: m_Enabled
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 4267845147669896207, guid: 03b51cc6055998e43914d1c35ae3c185,
-        type: 3}
-      propertyPath: m_IsTrigger
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4883069955222481219, guid: 03b51cc6055998e43914d1c35ae3c185,
@@ -1007,31 +977,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 1842051633742510584, guid: 1cdb12b7a1bc599408f8e98fec853f22,
-        type: 3}
-      propertyPath: m_Color.a
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1842051633742510584, guid: 1cdb12b7a1bc599408f8e98fec853f22,
-        type: 3}
-      propertyPath: m_Color.b
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1842051633742510584, guid: 1cdb12b7a1bc599408f8e98fec853f22,
-        type: 3}
-      propertyPath: m_Color.g
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1842051633742510584, guid: 1cdb12b7a1bc599408f8e98fec853f22,
-        type: 3}
-      propertyPath: m_Color.r
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1842051633742510584, guid: 1cdb12b7a1bc599408f8e98fec853f22,
-        type: 3}
-      propertyPath: m_Material
-      value: 
-      objectReference: {fileID: 0}
     - target: {fileID: 2109391050783471962, guid: 1cdb12b7a1bc599408f8e98fec853f22,
         type: 3}
       propertyPath: m_Pivot.x
@@ -1141,11 +1086,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Canvas
-      objectReference: {fileID: 0}
-    - target: {fileID: 7955293392223373753, guid: 1cdb12b7a1bc599408f8e98fec853f22,
-        type: 3}
-      propertyPath: m_CullTransparentMesh
-      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

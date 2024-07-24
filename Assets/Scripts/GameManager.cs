@@ -7,12 +7,13 @@ public class GameManager : MonoBehaviour
 {
     [SerializeField] GridManager gridManager;
     [SerializeField] ColorManager colorManager;
-    [SerializeField] Hex hex;
+    [SerializeField] Hex targetHex;
     [SerializeField] GameObject playerPawn;
     [SerializeField] TextMeshProUGUI similarityText;
     [SerializeField] LevelManager levelManager;
     [HideInInspector] public GridCell targetGrid;
     [HideInInspector] public GridCell selectedGrid;
+    [SerializeField] float levelTarget = 70;
 
     float similarity;
 
@@ -54,7 +55,7 @@ public class GameManager : MonoBehaviour
     {
         foreach (KeyValuePair<Hex, GridCell> pair in gridManager.gridDictionary)
         {
-            if (pair.Key.Equals(hex))
+            if (pair.Key.Equals(targetHex))
             {
                 targetGrid = pair.Value;
                 targetGrid.SetColor();
@@ -65,7 +66,7 @@ public class GameManager : MonoBehaviour
     public void PlacePawn(GridCell selectedGrid)
     {
         this.selectedGrid = selectedGrid;
-        selectedGrid.vector.y = 1f;
+        selectedGrid.vector.y = 2f;
         colorManager.SetParticleColor(selectedGrid);
         playerPawn.transform.position = selectedGrid.vector;
         SoundManager.PlaySound(GameAssets.SoundType.bubble);
@@ -101,7 +102,10 @@ public class GameManager : MonoBehaviour
         similarity = (maxManhattanDistance - manhattanDistance) / maxManhattanDistance * 100;
         similarity = Mathf.Ceil(similarity);
         similarityText.text = "Similarity = %" + similarity;
-        Invoke(nameof(SituationBySimilarity), 1f);
+        FallAnimStart();
+        Invoke(nameof(DestroyEmptyGrids), 1.5f);
+        Invoke(nameof(InstantiateEmptyGrids), 1.5f);
+        Invoke(nameof(SituationBySimilarity), 5f);
 
     }
     private IEnumerator ShowTargetGrid()
@@ -117,13 +121,52 @@ public class GameManager : MonoBehaviour
     }
     private void SituationBySimilarity()
     {
-        if (similarity >= 70)
+        if (similarity >= levelTarget)
         {
             levelManager.LoadNextLevel();
         }
         else
         {
             levelManager.ReloadLevel();
+        }
+    }
+    void FallAnimStart()
+    {
+        foreach (KeyValuePair<Hex, GridCell> pair in gridManager.gridDictionary)
+        {
+            if (pair.Value.isEmpty == true)
+            {
+                pair.Value.GetComponentInChildren<Rigidbody>().useGravity = true;
+            }
+        }
+    }
+    void DestroyEmptyGrids()
+    {
+        foreach (KeyValuePair<Hex, GridCell> pair in gridManager.gridDictionary)
+        {
+            if (pair.Value.isEmpty == true)
+            {
+                pair.Value.GetComponentInChildren<Rigidbody>().useGravity = false;
+                pair.Value.GetComponentInChildren<Rigidbody>().constraints = RigidbodyConstraints.FreezePositionY;
+                pair.Value.GetComponentInChildren<MeshRenderer>().enabled = false;
+                
+            }
+        }
+    }
+    void InstantiateEmptyGrids()
+    {
+        foreach (KeyValuePair<Hex, GridCell> pair in gridManager.gridDictionary)
+        {
+            if (pair.Value.isEmpty == true)
+            {
+                Vector3 position = pair.Value.vector;
+                position.y = 30f;
+                pair.Value.GetComponent<Transform>().position = position;
+                pair.Value.GetComponentInChildren<MeshRenderer>().enabled = true;
+                pair.Value.GetComponentInChildren<Rigidbody>().constraints = RigidbodyConstraints.None;
+                pair.Value.GetComponentInChildren<Rigidbody>().useGravity = true;
+                pair.Value.GetComponentInChildren<MeshCollider>().isTrigger = false;
+            }
         }
     }
 }

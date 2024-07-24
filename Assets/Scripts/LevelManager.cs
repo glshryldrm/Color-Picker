@@ -2,54 +2,44 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using UnityEditor.UI;
-using UnityEngine.UIElements;
 
 public class LevelManager : MonoBehaviour
 {
-    public List<string> levels = new List<string>();
+    [SerializeField] List<string> levels = new List<string>();
     public Animator transition;
-    [SerializeField] bool loadLevelOnStart = false;
-    string levelKey = "CurrentLevel";
+    string levelKey = "currentLevel";
     public void ReloadLevel()
     {
-        StartCoroutine(LoadLevel(PlayerPrefs.GetInt(levelKey)));
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
 
     public void LoadNextLevel()
     {
-        int currentLevel = PlayerPrefs.GetInt(levelKey, 0);
+        int currentLevel = PlayerPrefs.GetInt(levelKey);
         int nextLevel = currentLevel + 1;
-        SaveCurrentLevel(levelKey, nextLevel);
-        StartCoroutine(LoadLevel(nextLevel));
+        LoadLevel(nextLevel);
     }
-
-    public IEnumerator LoadLevel(int level)
+    public void LoadLevel(int level)
     {
         SaveCurrentLevel(levelKey, level);
 
         if (level >= levels.Count)
         {
             int randomLevel = Random.Range(0, levels.Count);
-            transition.SetTrigger("Start");
 
-            yield return new WaitForSeconds(1f);
             SceneManager.LoadScene(levels[randomLevel]);
+            transition.SetBool("isLoaded", true);
         }
         else
         {
-            transition.SetTrigger("Start");
-
-            yield return new WaitForSeconds(1f);
             SceneManager.LoadScene(levels[level]);
+            transition.SetBool("isLoaded", true);
         }
-
-
+        transition.SetBool("isLoaded", false);
     }
-
-    void SaveCurrentLevel(string levelKey, int level)
+    void SaveCurrentLevel(string key, int level)
     {
-        PlayerPrefs.SetInt(levelKey, level);
+        PlayerPrefs.SetInt(key, level);
         PlayerPrefs.Save();
     }
 }

@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 1486546083418321032}
   - component: {fileID: 5965131390396929538}
   - component: {fileID: 375372869293938300}
-  m_Layer: 6
+  m_Layer: 0
   m_Name: Managers
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -49,7 +49,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   gridManager: {fileID: 0}
   colorManager: {fileID: 1486546083418321032}
-  hex:
+  targetHex:
     q: 0
     r: 0
   playerPawn: {fileID: 0}
@@ -57,6 +57,7 @@ MonoBehaviour:
   levelManager: {fileID: 375372869293938300}
   targetGrid: {fileID: 0}
   selectedGrid: {fileID: 0}
+  levelTarget: 70
 --- !u!114 &1486546083418321032
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -106,5 +107,5 @@ MonoBehaviour:
   levels:
   - LEVEL 1
   - LEVEL 2
-  levelTransition: {fileID: 0}
-  duration: 1
+  - LEVEL 3
+  transition: {fileID: 0}
