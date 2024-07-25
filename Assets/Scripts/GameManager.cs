@@ -7,14 +7,14 @@ public class GameManager : MonoBehaviour
 {
     [SerializeField] GridManager gridManager;
     [SerializeField] ColorManager colorManager;
-    [SerializeField] Hex targetHex;
     [SerializeField] GameObject playerPawn;
     [SerializeField] TextMeshProUGUI similarityText;
     [SerializeField] LevelManager levelManager;
+    [SerializeField] Hex targetHex;
     [HideInInspector] public GridCell targetGrid;
     [HideInInspector] public GridCell selectedGrid;
     [SerializeField] float levelTarget = 70;
-
+    public Animator gridAnimator;
     float similarity;
 
     private void Start()
@@ -66,7 +66,7 @@ public class GameManager : MonoBehaviour
     public void PlacePawn(GridCell selectedGrid)
     {
         this.selectedGrid = selectedGrid;
-        selectedGrid.vector.y = 2f;
+        selectedGrid.vector.y = 1.5f;
         colorManager.SetParticleColor(selectedGrid);
         playerPawn.transform.position = selectedGrid.vector;
         SoundManager.PlaySound(GameAssets.SoundType.bubble);
@@ -103,8 +103,7 @@ public class GameManager : MonoBehaviour
         similarity = Mathf.Ceil(similarity);
         similarityText.text = "Similarity = %" + similarity;
         FallAnimStart();
-        Invoke(nameof(DestroyEmptyGrids), 1.5f);
-        Invoke(nameof(InstantiateEmptyGrids), 1.5f);
+        Invoke(nameof(Fall2AnimStart), 1f);
         Invoke(nameof(SituationBySimilarity), 5f);
 
     }
@@ -136,36 +135,17 @@ public class GameManager : MonoBehaviour
         {
             if (pair.Value.isEmpty == true)
             {
-                pair.Value.GetComponentInChildren<Rigidbody>().useGravity = true;
+                pair.Value.GetComponentInChildren<Animator>().SetBool("isEmpty", true);
             }
         }
     }
-    void DestroyEmptyGrids()
+    void Fall2AnimStart()
     {
         foreach (KeyValuePair<Hex, GridCell> pair in gridManager.gridDictionary)
         {
             if (pair.Value.isEmpty == true)
             {
-                pair.Value.GetComponentInChildren<Rigidbody>().useGravity = false;
-                pair.Value.GetComponentInChildren<Rigidbody>().constraints = RigidbodyConstraints.FreezePositionY;
-                pair.Value.GetComponentInChildren<MeshRenderer>().enabled = false;
-                
-            }
-        }
-    }
-    void InstantiateEmptyGrids()
-    {
-        foreach (KeyValuePair<Hex, GridCell> pair in gridManager.gridDictionary)
-        {
-            if (pair.Value.isEmpty == true)
-            {
-                Vector3 position = pair.Value.vector;
-                position.y = 30f;
-                pair.Value.GetComponent<Transform>().position = position;
-                pair.Value.GetComponentInChildren<MeshRenderer>().enabled = true;
-                pair.Value.GetComponentInChildren<Rigidbody>().constraints = RigidbodyConstraints.None;
-                pair.Value.GetComponentInChildren<Rigidbody>().useGravity = true;
-                pair.Value.GetComponentInChildren<MeshCollider>().isTrigger = false;
+                pair.Value.GetComponentInChildren<Animator>().SetBool("isFall", true);
             }
         }
     }

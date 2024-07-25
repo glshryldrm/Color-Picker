@@ -41,11 +41,13 @@ public class GridManager : MonoBehaviour
                         position,
                         this.transform.rotation,
                         gizmosPrefab.GetComponent<Transform>().localScale);
-                    Gizmos.color = Color.white;
+                        Gizmos.color = Color.white;
                     GUIStyle style = new GUIStyle();
                     style.alignment = TextAnchor.MiddleCenter;
                     style.normal.textColor = Color.black;
-                    //UnityEditor.Handles.Label(position, q.ToString() + " - " + r.ToString(), style);
+#if UNITY_EDITOR
+                    UnityEditor.Handles.Label(position, q.ToString() + " - " + r.ToString(), style);
+#endif
                 }
             }
         }
@@ -57,9 +59,9 @@ public class GridManager : MonoBehaviour
 
             for (int x = 0; x < width; x++)
             {
-                for (int y = 0; y < height; y++)
+                for (int z = 0; z < height; z++)
                 {
-                    Hex hexCoordinates = new Hex(x, y);
+                    Hex hexCoordinates = new Hex(x, z);
                     Vector3 position = HexToPosition(hexCoordinates, hexWidth, hexHeight);
                     position.x -= offsetX; // X ekseninde ortala
                     position.z -= offsetZ; // Z ekseninde ortala
@@ -68,12 +70,13 @@ public class GridManager : MonoBehaviour
                         position,
                         this.transform.rotation,
                         gizmosPrefab.GetComponent<Transform>().localScale);
-                    Gizmos.color = Color.white;
+                        Gizmos.color = Color.white;
                     GUIStyle style = new GUIStyle();
                     style.alignment = TextAnchor.MiddleCenter;
                     style.normal.textColor = Color.black;
-                    //UnityEditor.Handles.Label(position, x.ToString() + " - " + y.ToString(), style);
-                    //burada kodu yorum satirina aldim cunku diger turlu apk alamiyordum
+#if UNITY_EDITOR
+                    UnityEditor.Handles.Label(position, x.ToString() + " - " + z.ToString(), style);
+#endif
                 }
             }
         }
@@ -119,9 +122,9 @@ public class GridManager : MonoBehaviour
             gridDictionary = new Dictionary<Hex, GridCell>();
             for (int x = 0; x < width; x++)
             {
-                for (int y = 0; y < height; y++)
+                for (int z = 0; z < height; z++)
                 {
-                    Hex hexCoordinates = new Hex(x, y);
+                    Hex hexCoordinates = new Hex(x, z);
                     Vector3 position = HexToPosition(hexCoordinates, hexWidth, hexHeight);
                     position.x -= offsetX; // X ekseninde ortala
                     position.z -= offsetZ; // Z ekseninde ortala

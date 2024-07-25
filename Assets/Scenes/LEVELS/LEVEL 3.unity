@@ -730,6 +730,36 @@ PrefabInstance:
       propertyPath: m_Name
       value: GridManager
       objectReference: {fileID: 0}
+    - target: {fileID: 7110576047749969749, guid: 1b9e584300787844fb8a3501da2d2bba,
+        type: 3}
+      propertyPath: width
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 7110576047749969749, guid: 1b9e584300787844fb8a3501da2d2bba,
+        type: 3}
+      propertyPath: height
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 7110576047749969749, guid: 1b9e584300787844fb8a3501da2d2bba,
+        type: 3}
+      propertyPath: radius
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 7110576047749969749, guid: 1b9e584300787844fb8a3501da2d2bba,
+        type: 3}
+      propertyPath: gridShape
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7110576047749969749, guid: 1b9e584300787844fb8a3501da2d2bba,
+        type: 3}
+      propertyPath: targetHex.q
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 7110576047749969749, guid: 1b9e584300787844fb8a3501da2d2bba,
+        type: 3}
+      propertyPath: targetHex.r
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -818,6 +848,11 @@ PrefabInstance:
       propertyPath: gridManager
       value: 
       objectReference: {fileID: 20816819}
+    - target: {fileID: 7987706960245087968, guid: b5baa2cf1b4a99c47a2d8d83e4cd92e5,
+        type: 3}
+      propertyPath: targetHex.q
+      value: 3
+      objectReference: {fileID: 0}
     - target: {fileID: 7987706960245087968, guid: b5baa2cf1b4a99c47a2d8d83e4cd92e5,
         type: 3}
       propertyPath: similarityText
