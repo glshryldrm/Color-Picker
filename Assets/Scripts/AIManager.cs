@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using DG.Tweening;
 
 public class AIManager : MonoBehaviour
 {
@@ -10,14 +11,6 @@ public class AIManager : MonoBehaviour
         Medium,
         Hard
     }
-    private void Start()
-    {
-        MovePawnsTowardsTarget(easyPawns);
-        MovePawnsTowardsTarget(mediumPawns);
-        MovePawnsTowardsTarget(hardPawns);
-    }
-
-
     public Difficulty difficulty;
     public GridManager gridManager;
     public GameManager gameManager;
@@ -77,11 +70,23 @@ public class AIManager : MonoBehaviour
     }
     void SetNewTarget(Pawn pawn, Difficulty difficulty)
     {
-        List<Hex> allHexes = new List<Hex>(gridManager.gridDictionary.Keys);
-        Hex targetHex = allHexes[Random.Range(0, allHexes.Count)];
-        pawn.targetPosition = gridManager.HexToPosition(gameManager.targetHex);
-        pawn.targetPosition.y = 1.5f;
-        pawn.isMoving = true;
+        List<GridCell> allGridCells = new List<GridCell>();
+        
+        foreach (GridCell cell in gridManager.gridDictionary.Values)
+        {
+            if (cell.isEmpty == true)
+            {
+                allGridCells.Add(cell);
+            }
+        }
+        GridCell targetGrid = allGridCells[(Random.Range(0, allGridCells.Count))];
+        if (targetGrid.isEmpty == true)
+        {
+            pawn.targetPosition = targetGrid.vector;
+            pawn.targetPosition.y = 1.5f;
+            pawn.isMoving = true;
+            targetGrid.isEmpty = false;
+        }
     }
 
     public void MovePawnsTowardsTarget(List<Pawn> pawns)
@@ -91,17 +96,17 @@ public class AIManager : MonoBehaviour
             if (!pawn.isMoving) continue;
 
             // Hedef pozisyona doğru hareket et
-            pawn.transform.position = Vector3.MoveTowards(pawn.transform.position, pawn.targetPosition, moveSpeed * Time.deltaTime);
-
-            // Piyon hedefe ulaştığında yeni hedef belirle
-            if (Vector3.Distance(pawn.transform.position, pawn.targetPosition) < 0.1f)
+            pawn.transform.DOMove(pawn.targetPosition, 1f).OnComplete(() =>
             {
-                PerformActionOnGrid(pawn);
-                SetNewTarget(pawn, pawn.difficulty);
-            }
+                // Piyon hedefe ulaştığında yeni hedef belirle
+                if (Vector3.Distance(pawn.transform.position, pawn.targetPosition) < 0.1f)
+                {
+                    PerformActionOnGrid(pawn);
+                    SetNewTarget(pawn, pawn.difficulty);
+                }
+            });
         }
     }
-
 
 
     void PerformActionOnGrid(Pawn pawn)

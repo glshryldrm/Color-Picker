@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using DG.Tweening;
 
 public class GameManager : MonoBehaviour
 {
@@ -125,13 +126,13 @@ public class GameManager : MonoBehaviour
         this.selectedGrid = selectedGrid;
         selectedGrid.vector.y = 1.5f;
         colorManager.SetParticleColor(selectedGrid);
-        playerPawn.transform.position = selectedGrid.vector;
+        playerPawn.transform.DOMove(selectedGrid.vector, 1f);
         SoundManager.PlaySound(GameAssets.SoundType.bubble);
         InputManager.touchCheck = false;
         selectedGrid.isEmpty = false;
-        aIManager.MovePawnsTowardsTarget(aIManager.easyPawns);
-        aIManager.MovePawnsTowardsTarget(aIManager.mediumPawns);
-        aIManager.MovePawnsTowardsTarget(aIManager.hardPawns);
+
+        aIManager.MovePawnsTowardsTarget(botPawns); ;
+
     }
     public void CalculateColorSimilarity(Color color1, Color color2)
     {
@@ -164,8 +165,8 @@ public class GameManager : MonoBehaviour
         similarity = Mathf.Ceil(similarity);
         this.similarity = similarity;
         similarityText.text = "Similarity = %" + this.similarity;
-        FallAnimStart();
-        Invoke(nameof(Fall2AnimStart), 1f);
+        //FallAnimStart();
+        //Invoke(nameof(Fall2AnimStart), 1f);
         Invoke(nameof(SituationBySimilarity), 5f);
         return similarity;
     }
