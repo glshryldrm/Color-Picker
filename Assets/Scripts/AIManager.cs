@@ -1,4 +1,4 @@
-using System.Collections;
+ï»¿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -23,20 +23,20 @@ public class AIManager : MonoBehaviour
     public GameManager gameManager;
     public float moveSpeed = 5f;
 
-    public List<Pawn> easyPawns; // Kolay zorluk piyonlarý
-    public List<Pawn> mediumPawns; // Orta zorluk piyonlarý
-    public List<Pawn> hardPawns; // Zor zorluk piyonlarý
+    public List<Pawn> easyPawns; // Kolay zorluk piyonlarÃ½
+    public List<Pawn> mediumPawns; // Orta zorluk piyonlarÃ½
+    public List<Pawn> hardPawns; // Zor zorluk piyonlarÃ½
 
     public void DetermineBotTargets()
     {
-        // Listeyi rastgele karýþtýr
+        // Listeyi rastgele karÃ½Ã¾tÃ½r
         Shuffle(gameManager.botPawns);
 
-        // Piyonlarý zorluk seviyelerine göre ayýr
+        // PiyonlarÃ½ zorluk seviyelerine gÃ¶re ayÃ½r
         int totalPawns = gameManager.botPawns.Count;
-        int easyCount = Mathf.CeilToInt(totalPawns * 0.33f); // Kolay zorluk piyonlarý
-        int mediumCount = Mathf.CeilToInt(totalPawns * 0.33f); // Orta zorluk piyonlarý
-        int hardCount = totalPawns - easyCount - mediumCount; // Zor zorluk piyonlarý
+        int easyCount = Mathf.CeilToInt(totalPawns * 0.33f); // Kolay zorluk piyonlarÃ½
+        int mediumCount = Mathf.CeilToInt(totalPawns * 0.33f); // Orta zorluk piyonlarÃ½
+        int hardCount = totalPawns - easyCount - mediumCount; // Zor zorluk piyonlarÃ½
 
         easyPawns = gameManager.botPawns.GetRange(0, easyCount);
         mediumPawns = gameManager.botPawns.GetRange(easyCount, mediumCount);
@@ -51,13 +51,13 @@ public class AIManager : MonoBehaviour
 
         foreach (var pawn in mediumPawns)
         {
-            pawn.difficulty = Difficulty.Easy;
+            pawn.difficulty = Difficulty.Medium;
             SetNewTarget(pawn, Difficulty.Medium);
         }
 
         foreach (var pawn in hardPawns)
         {
-            pawn.difficulty = Difficulty.Easy;
+            pawn.difficulty = Difficulty.Hard;
             SetNewTarget(pawn, Difficulty.Hard);
         }
     }
@@ -90,17 +90,19 @@ public class AIManager : MonoBehaviour
         {
             if (!pawn.isMoving) continue;
 
-            // Hedef pozisyona doðru hareket et
-            pawn.transform.position = pawn.targetPosition;
+            // Hedef pozisyona doÄŸru hareket et
+            pawn.transform.position = Vector3.MoveTowards(pawn.transform.position, pawn.targetPosition, moveSpeed * Time.deltaTime);
 
-            //// Hedefe ulaþtýðýnda yeni hedef belirle ve aksiyon yap
-            //if (Vector3.Distance(pawn.transform.position, pawn.targetPosition) < 0.1f)
-            //{
-            //    PerformActionOnGrid(pawn);
-            //    SetNewTarget(pawn, pawn.difficulty);
-            //}
+            // Piyon hedefe ulaÅŸtÄ±ÄŸÄ±nda yeni hedef belirle
+            if (Vector3.Distance(pawn.transform.position, pawn.targetPosition) < 0.1f)
+            {
+                PerformActionOnGrid(pawn);
+                SetNewTarget(pawn, pawn.difficulty);
+            }
         }
     }
+
+
 
     void PerformActionOnGrid(Pawn pawn)
     {
@@ -116,13 +118,13 @@ public class AIManager : MonoBehaviour
                 switch (pawn.difficulty)
                 {
                     case Difficulty.Easy:
-                        success = (similarity >= 50); // Kolay botlar %50 doðruluk payýna sahip
+                        success = (similarity >= 50); // Kolay botlar %50 doÃ°ruluk payÃ½na sahip
                         break;
                     case Difficulty.Medium:
-                        success = similarity >= 70; // Orta botlar %70 doðruluk payýna sahip
+                        success = similarity >= 70; // Orta botlar %70 doÃ°ruluk payÃ½na sahip
                         break;
                     case Difficulty.Hard:
-                        success = similarity >= 90; // Zor botlar %90 doðruluk payýna sahip
+                        success = similarity >= 90; // Zor botlar %90 doÃ°ruluk payÃ½na sahip
                         break;
                 }
             }
@@ -138,7 +140,7 @@ public class AIManager : MonoBehaviour
         }
         else
         {
-            pawn.levelPassed = 0; // Baþarýsýz olursa geçilen seviye sýfýrlanýr
+            pawn.levelPassed = 0; // BaÃ¾arÃ½sÃ½z olursa geÃ§ilen seviye sÃ½fÃ½rlanÃ½r
         }
     }
     int GetEliminationLevel(Difficulty difficulty)
