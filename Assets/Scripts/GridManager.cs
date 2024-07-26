@@ -138,13 +138,13 @@ public class GridManager : MonoBehaviour
             }
         }
     }
-    Vector3 HexToPosition(Hex hex, float hexWidth, float hexHeight)
+    public Vector3 HexToPosition(Hex hex, float hexWidth, float hexHeight)
     {
         float x = hex.q * hexWidth * 0.75f;
         float z = hex.r * hexHeight + (hex.q % 2 == 0 ? 0 : hexHeight * 0.5f); // Satır bazında ofset uygular
         return new Vector3(x, 0, z);
     }
-    Vector3 HexToPosition(Hex hex)
+    public Vector3 HexToPosition(Hex hex)
     {
         float x = hexWidth * 0.75f * hex.q;
         float z = (Mathf.Sqrt(3.0f) / 2.0f * hex.q + Mathf.Sqrt(3.0f) * hex.r) * hexRadius * (hexHeight / hexWidth);

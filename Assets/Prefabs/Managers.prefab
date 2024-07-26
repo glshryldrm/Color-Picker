@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 1486546083418321032}
   - component: {fileID: 5965131390396929538}
   - component: {fileID: 375372869293938300}
+  - component: {fileID: 1028229130016948290}
   m_Layer: 0
   m_Name: Managers
   m_TagString: Untagged
@@ -49,15 +50,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   gridManager: {fileID: 0}
   colorManager: {fileID: 1486546083418321032}
-  targetHex:
-    q: 0
-    r: 0
   playerPawn: {fileID: 0}
   similarityText: {fileID: 0}
   levelManager: {fileID: 375372869293938300}
+  targetHex:
+    q: 0
+    r: 0
   targetGrid: {fileID: 0}
   selectedGrid: {fileID: 0}
   levelTarget: 70
+  numberOfPawns: 4
+  aIManager: {fileID: 1028229130016948290}
 --- !u!114 &1486546083418321032
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -71,10 +74,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   colors:
-  - {r: 1, g: 0, b: 0, a: 1}
-  - {r: 0.99045765, g: 1, b: 0, a: 1}
-  - {r: 0, g: 1, b: 0.00030636787, a: 1}
-  - {r: 0, g: 0.04617977, b: 1, a: 1}
+  - {r: 0, g: 0.006503105, b: 1, a: 1}
+  - {r: 0, g: 0.8967843, b: 1, a: 1}
+  - {r: 0, g: 1, b: 0.61615276, a: 1}
   gridManager: {fileID: 0}
 --- !u!114 &5965131390396929538
 MonoBehaviour:
@@ -109,3 +111,17 @@ MonoBehaviour:
   - LEVEL 2
   - LEVEL 3
   transition: {fileID: 0}
+--- !u!114 &1028229130016948290
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8478242619420472160}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9716b27fb97c06d42baee424d0d022b8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  difficulty: 0
+  gridManager: {fileID: 0}

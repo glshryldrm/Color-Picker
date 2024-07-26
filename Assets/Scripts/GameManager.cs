@@ -10,17 +10,21 @@ public class GameManager : MonoBehaviour
     [SerializeField] GameObject playerPawn;
     [SerializeField] TextMeshProUGUI similarityText;
     [SerializeField] LevelManager levelManager;
-    [SerializeField] Hex targetHex;
+    public Hex targetHex;
     [HideInInspector] public GridCell targetGrid;
     [HideInInspector] public GridCell selectedGrid;
     [SerializeField] float levelTarget = 70;
-    public Animator gridAnimator;
     float similarity;
+    public int numberOfPawns;
+    public AIManager aIManager;
+    public List<Pawn> botPawns;
 
     private void Start()
     {
         FindTargetGridColor();
         StartCoroutine(ShowTargetGrid());
+        PlacePawnsAroundHexGrid();
+        //StartCoroutine(LevelProgression());
 
     }
     private void Awake()
@@ -30,17 +34,70 @@ public class GameManager : MonoBehaviour
         QualitySettings.vSyncCount = 0;
         Application.targetFrameRate = 60;
     }
+    void PlacePawnsAroundHexGrid()
+    {
+        if (gridManager.gridDictionary == null || gridManager.gridDictionary.Count == 0) return;
+        botPawns = new List<Pawn>();
+        Vector3 playerPawnPosition = playerPawn.transform.position;
+        List<Vector3> hexBoundaryPositions;
+        GetHexagonBoundaryPositions(numberOfPawns, gridManager.radius + 1, out hexBoundaryPositions);
+        int placedPawns = 0;
+
+        foreach (Vector3 position in hexBoundaryPositions)
+        {
+            if (Vector3.Distance(position, playerPawnPosition) > 0.1f && placedPawns < numberOfPawns) // Player pawn'ýn bulunduðu konumu atla
+            {
+                GameObject pawnAI = Instantiate(GameAssets.Instance.pawnPrefab, position, Quaternion.identity);
+                Pawn pawn = pawnAI.GetComponent<Pawn>();
+                if (pawn != null)
+                {
+                    pawn.position = position;
+                    botPawns.Add(pawn);
+                    placedPawns++;
+                }
+            }
+        }
+        aIManager.DetermineBotTargets();
+    }
+
+    void GetHexagonBoundaryPositions(int count, float radius, out List<Vector3> positions)
+    {
+        positions = new List<Vector3>();
+
+        // Altýgenin yarýçapý
+        float hexRadius = radius;
+
+        // Altýgenin köþe açýlarý
+        float angleStep = 360f / count;
+
+        for (int i = 0; i < count; i++)
+        {
+            // Açý hesapla ve radyan cinsinden dönüþtür
+            float angle = i * angleStep;
+            float radians = angle * Mathf.Deg2Rad;
+
+            // Altýgenin köþe pozisyonunu hesapla
+            Vector3 offset = new Vector3(Mathf.Cos(radians) * hexRadius, 0, Mathf.Sin(radians) * hexRadius);
+            positions.Add(new Vector3(0, 0.5f, 0) + offset);
+        }
+    }
+
+
+
+
+    private bool IsOnGridBoundary(Hex hex)
+    {
+        int maxRadius = gridManager.radius;
+        return Mathf.Abs(hex.q) == maxRadius || Mathf.Abs(hex.r) == maxRadius;
+    }
+
     void FindGridsColor()
     {
         InputManager.touchCheck = false;
-        int x = 0;
 
         foreach (KeyValuePair<Hex, GridCell> pair in gridManager.gridDictionary)
         {
-
-            //pair.Value.GridCellColor = colorList[x];
             pair.Value.GridCellColor = colorManager.CalculateCellColor(pair.Key.q, pair.Key.r);
-            x++;
         }
     }
     void SetGridsColor()
@@ -72,6 +129,9 @@ public class GameManager : MonoBehaviour
         SoundManager.PlaySound(GameAssets.SoundType.bubble);
         InputManager.touchCheck = false;
         selectedGrid.isEmpty = false;
+        aIManager.MovePawnsTowardsTarget(aIManager.easyPawns);
+        aIManager.MovePawnsTowardsTarget(aIManager.mediumPawns);
+        aIManager.MovePawnsTowardsTarget(aIManager.hardPawns);
     }
     public void CalculateColorSimilarity(Color color1, Color color2)
     {
@@ -86,8 +146,9 @@ public class GameManager : MonoBehaviour
         similarityText.text = "Similarity = %" + similarity;
         Invoke(nameof(SituationBySimilarity), 1f);
     }
-    public void CalculateDistancePercentage(GridCell targetGrid, GridCell selectedGrid)
+    public float CalculateDistancePercentage(GridCell targetGrid, GridCell selectedGrid)
     {
+        float similarity;
         float manhattanDistance = Mathf.Abs(selectedGrid.vector.x - targetGrid.vector.x) + Mathf.Abs(selectedGrid.vector.z - targetGrid.vector.z);
         float maxManhattanDistance;
         if (gridManager.gridShape == GridManager.GridShapes.hexGrid)
@@ -101,11 +162,12 @@ public class GameManager : MonoBehaviour
 
         similarity = (maxManhattanDistance - manhattanDistance) / maxManhattanDistance * 100;
         similarity = Mathf.Ceil(similarity);
-        similarityText.text = "Similarity = %" + similarity;
+        this.similarity = similarity;
+        similarityText.text = "Similarity = %" + this.similarity;
         FallAnimStart();
         Invoke(nameof(Fall2AnimStart), 1f);
         Invoke(nameof(SituationBySimilarity), 5f);
-
+        return similarity;
     }
     private IEnumerator ShowTargetGrid()
     {

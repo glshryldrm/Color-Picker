@@ -743,12 +743,12 @@ PrefabInstance:
     - target: {fileID: 7110576047749969749, guid: 1b9e584300787844fb8a3501da2d2bba,
         type: 3}
       propertyPath: radius
-      value: 5
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 7110576047749969749, guid: 1b9e584300787844fb8a3501da2d2bba,
         type: 3}
       propertyPath: gridShape
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7110576047749969749, guid: 1b9e584300787844fb8a3501da2d2bba,
         type: 3}
@@ -778,76 +778,16 @@ PrefabInstance:
       propertyPath: transition
       value: 
       objectReference: {fileID: 1067701835}
-    - target: {fileID: 1486546083418321032, guid: b5baa2cf1b4a99c47a2d8d83e4cd92e5,
+    - target: {fileID: 1028229130016948290, guid: b5baa2cf1b4a99c47a2d8d83e4cd92e5,
         type: 3}
       propertyPath: gridManager
       value: 
       objectReference: {fileID: 20816819}
     - target: {fileID: 1486546083418321032, guid: b5baa2cf1b4a99c47a2d8d83e4cd92e5,
         type: 3}
-      propertyPath: colors.Array.size
-      value: 3
-      objectReference: {fileID: 0}
-    - target: {fileID: 1486546083418321032, guid: b5baa2cf1b4a99c47a2d8d83e4cd92e5,
-        type: 3}
-      propertyPath: colors.Array.data[0].b
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 1486546083418321032, guid: b5baa2cf1b4a99c47a2d8d83e4cd92e5,
-        type: 3}
-      propertyPath: colors.Array.data[0].g
-      value: 0.006503105
-      objectReference: {fileID: 0}
-    - target: {fileID: 1486546083418321032, guid: b5baa2cf1b4a99c47a2d8d83e4cd92e5,
-        type: 3}
-      propertyPath: colors.Array.data[0].r
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1486546083418321032, guid: b5baa2cf1b4a99c47a2d8d83e4cd92e5,
-        type: 3}
-      propertyPath: colors.Array.data[1].b
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 1486546083418321032, guid: b5baa2cf1b4a99c47a2d8d83e4cd92e5,
-        type: 3}
-      propertyPath: colors.Array.data[1].g
-      value: 0.8967843
-      objectReference: {fileID: 0}
-    - target: {fileID: 1486546083418321032, guid: b5baa2cf1b4a99c47a2d8d83e4cd92e5,
-        type: 3}
-      propertyPath: colors.Array.data[1].r
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1486546083418321032, guid: b5baa2cf1b4a99c47a2d8d83e4cd92e5,
-        type: 3}
-      propertyPath: colors.Array.data[2].b
-      value: 0.61615276
-      objectReference: {fileID: 0}
-    - target: {fileID: 1486546083418321032, guid: b5baa2cf1b4a99c47a2d8d83e4cd92e5,
-        type: 3}
-      propertyPath: colors.Array.data[2].g
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 1486546083418321032, guid: b5baa2cf1b4a99c47a2d8d83e4cd92e5,
-        type: 3}
-      propertyPath: colors.Array.data[2].r
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1486546083418321032, guid: b5baa2cf1b4a99c47a2d8d83e4cd92e5,
-        type: 3}
-      propertyPath: colors.Array.data[3].b
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1486546083418321032, guid: b5baa2cf1b4a99c47a2d8d83e4cd92e5,
-        type: 3}
-      propertyPath: colors.Array.data[3].g
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 1486546083418321032, guid: b5baa2cf1b4a99c47a2d8d83e4cd92e5,
-        type: 3}
-      propertyPath: colors.Array.data[3].r
-      value: 0.99045765
-      objectReference: {fileID: 0}
+      propertyPath: gridManager
+      value: 
+      objectReference: {fileID: 20816819}
     - target: {fileID: 3801003982879763214, guid: b5baa2cf1b4a99c47a2d8d83e4cd92e5,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -908,21 +848,6 @@ PrefabInstance:
       propertyPath: gridManager
       value: 
       objectReference: {fileID: 20816819}
-    - target: {fileID: 7987706960245087968, guid: b5baa2cf1b4a99c47a2d8d83e4cd92e5,
-        type: 3}
-      propertyPath: targetHex.q
-      value: 4
-      objectReference: {fileID: 0}
-    - target: {fileID: 7987706960245087968, guid: b5baa2cf1b4a99c47a2d8d83e4cd92e5,
-        type: 3}
-      propertyPath: targetHex.r
-      value: 4
-      objectReference: {fileID: 0}
-    - target: {fileID: 7987706960245087968, guid: b5baa2cf1b4a99c47a2d8d83e4cd92e5,
-        type: 3}
-      propertyPath: GridAnimator
-      value: 
-      objectReference: {fileID: 1067701835}
     - target: {fileID: 7987706960245087968, guid: b5baa2cf1b4a99c47a2d8d83e4cd92e5,
         type: 3}
       propertyPath: similarityText
