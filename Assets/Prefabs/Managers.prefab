@@ -59,8 +59,9 @@ MonoBehaviour:
   targetGrid: {fileID: 0}
   selectedGrid: {fileID: 0}
   levelTarget: 70
-  numberOfPawns: 4
+  numberOfPawns: 6
   aIManager: {fileID: 1028229130016948290}
+  botPawns: []
 --- !u!114 &1486546083418321032
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -125,3 +126,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   difficulty: 0
   gridManager: {fileID: 0}
+  gameManager: {fileID: 7987706960245087968}
+  moveSpeed: 5
+  easyPawns: []
+  mediumPawns: []
+  hardPawns: []

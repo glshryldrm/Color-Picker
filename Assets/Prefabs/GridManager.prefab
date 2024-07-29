@@ -44,9 +44,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: effc8b3b8ce469d49b52068b37f1d211, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  radius: 8
-  width: 10
-  height: 10
+  radius: 3
+  width: 6
+  height: 6
   hexRadius: 0.57735026
   hexWidth: 1
   hexHeight: 0.8660256
