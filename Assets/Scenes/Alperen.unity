@@ -5433,7 +5433,7 @@ GameObject:
   - component: {fileID: 1899410142}
   - component: {fileID: 1899410141}
   m_Layer: 0
-  m_Name: Particle System
+  m_Name: particle favori
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
