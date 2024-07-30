@@ -8,12 +8,11 @@ public class GameManager : MonoBehaviour
 {
     [SerializeField] GridManager gridManager;
     [SerializeField] ColorManager colorManager;
-    [SerializeField] GameObject playerPawn;
+    GameObject playerPawn;
     [SerializeField] TextMeshProUGUI similarityText;
     [SerializeField] LevelManager levelManager;
     public Hex targetHex;
     [HideInInspector] public GridCell targetGrid;
-    [HideInInspector] public GridCell selectedGrid;
     [SerializeField] float levelTarget = 70;
     float similarity;
     public int numberOfPawns;
@@ -37,30 +36,42 @@ public class GameManager : MonoBehaviour
     }
     void PlacePawnsAroundHexGrid()
     {
+        CreatePlayerPawn();
         if (gridManager.gridDictionary == null || gridManager.gridDictionary.Count == 0) return;
+
         botPawns = new List<Pawn>();
-        Vector3 playerPawnPosition = playerPawn.transform.position;
+        Vector3 playerPawnPosition = playerPawn.GetComponent<Pawn>().position;
         List<Vector3> hexBoundaryPositions;
         GetHexagonBoundaryPositions(numberOfPawns, gridManager.radius + 1, out hexBoundaryPositions);
+
         int placedPawns = 0;
+        float minDistanceFromPlayer = 1.0f; // Minimum mesafe deðerini ayarlayýn
 
         foreach (Vector3 position in hexBoundaryPositions)
         {
-            if (Vector3.Distance(position, playerPawnPosition) > 0.1f && placedPawns < numberOfPawns) // Player pawn'ýn bulunduðu konumu atla
+            if (Vector3.Distance(position, playerPawnPosition) > minDistanceFromPlayer && placedPawns < numberOfPawns)
             {
                 GameObject pawnAI = Instantiate(GameAssets.Instance.pawnPrefab, position, Quaternion.identity);
                 Pawn pawn = pawnAI.GetComponent<Pawn>();
                 if (pawn != null)
                 {
+                    pawn.pawnType = Pawn.PawnType.bot;
                     pawn.position = position;
                     botPawns.Add(pawn);
                     placedPawns++;
                 }
             }
         }
-        aIManager.DetermineBotTargets();
     }
-
+    void CreatePlayerPawn()
+    {
+        int radius = gridManager.radius;
+        Vector3 position = new Vector3(0, 0.5f, -(radius + 1));
+        playerPawn = Instantiate(GameAssets.Instance.pawnPrefab, position, Quaternion.identity);
+        playerPawn.GetComponent<Pawn>().pawnType = Pawn.PawnType.player;
+        playerPawn.GetComponent<Pawn>().position = position;
+        playerPawn.GetComponent<MeshRenderer>().materials[0].color = Color.red;
+    }
     void GetHexagonBoundaryPositions(int count, float radius, out List<Vector3> positions)
     {
         positions = new List<Vector3>();
@@ -121,31 +132,21 @@ public class GameManager : MonoBehaviour
         }
 
     }
-    public void PlacePawn(GridCell selectedGrid)
+    public void PlacePlayerPawn(GridCell selectedGrid)
     {
-        this.selectedGrid = selectedGrid;
         selectedGrid.vector.y = 1.5f;
-        colorManager.SetParticleColor(selectedGrid);
-        playerPawn.transform.DOMove(selectedGrid.vector, 1f);
-        SoundManager.PlaySound(GameAssets.SoundType.bubble);
-        InputManager.touchCheck = false;
-        selectedGrid.isEmpty = false;
+        playerPawn.GetComponent<Pawn>().similarity = CalculateDistancePercentage(targetGrid, selectedGrid);
+        playerPawn.transform.DOJump(selectedGrid.vector, aIManager.jumpPower, aIManager.numJumps, aIManager.moveDuration).OnComplete(() =>
+        {
+            colorManager.SetParticleColor(selectedGrid);
+            SoundManager.PlaySound(GameAssets.SoundType.bubble);
+            InputManager.touchCheck = false;
+            selectedGrid.isEmpty = false;
+            PrintPlayerSimilarty();
+            aIManager.DetermineBotTargets();
+            aIManager.MovePawnsTowardsTarget(botPawns);
+        });
 
-        aIManager.MovePawnsTowardsTarget(botPawns); ;
-
-    }
-    public void CalculateColorSimilarity(Color color1, Color color2)
-    {
-        float rDiff = color1.r - color2.r;
-        float gDiff = color1.g - color2.g;
-        float bDiff = color1.b - color2.b;
-
-        float distance = Mathf.Sqrt(rDiff * rDiff + gDiff * gDiff + bDiff * bDiff);
-
-        similarity = (1.0f - (distance / Mathf.Sqrt(3.0f))) * 100;
-        similarity = Mathf.Ceil(similarity);
-        similarityText.text = "Similarity = %" + similarity;
-        Invoke(nameof(SituationBySimilarity), 1f);
     }
     public float CalculateDistancePercentage(GridCell targetGrid, GridCell selectedGrid)
     {
@@ -163,12 +164,11 @@ public class GameManager : MonoBehaviour
 
         similarity = (maxManhattanDistance - manhattanDistance) / maxManhattanDistance * 100;
         similarity = Mathf.Ceil(similarity);
-        this.similarity = similarity;
-        similarityText.text = "Similarity = %" + this.similarity;
-        //FallAnimStart();
-        //Invoke(nameof(Fall2AnimStart), 1f);
-        Invoke(nameof(SituationBySimilarity), 5f);
         return similarity;
+    }
+    void PrintPlayerSimilarty()
+    {
+        similarityText.text = "Similarity = %" + playerPawn.GetComponent<Pawn>().similarity.ToString();
     }
     private IEnumerator ShowTargetGrid()
     {
@@ -201,6 +201,13 @@ public class GameManager : MonoBehaviour
                 pair.Value.GetComponentInChildren<Animator>().SetBool("isEmpty", true);
             }
         }
+        foreach (Pawn pawn in botPawns)
+        {
+            if (pawn.isSuccess == false)
+            {
+
+            }
+        }
     }
     void Fall2AnimStart()
     {
@@ -211,5 +218,9 @@ public class GameManager : MonoBehaviour
                 pair.Value.GetComponentInChildren<Animator>().SetBool("isFall", true);
             }
         }
+    }
+    void FindSucsesPawns()
+    {
+        
     }
 }

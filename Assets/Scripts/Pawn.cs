@@ -9,12 +9,9 @@ public class Pawn : MonoBehaviour
     public Color color;
     public AIManager.Difficulty difficulty;
     public PawnType pawnType;
-    public Vector3 targetPosition;
+    public GridCell targetGrid;
     public bool isMoving = false;
     public int levelPassed = 0;
-    public void EliminatePawn()
-    {
-        // Piyonu yok et veya devre dýþý býrak
-        gameObject.SetActive(false);
-    }
+    public bool isSuccess = false;
+    public float similarity;
 }

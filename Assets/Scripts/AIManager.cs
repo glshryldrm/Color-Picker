@@ -15,25 +15,29 @@ public class AIManager : MonoBehaviour
     public GridManager gridManager;
     public GameManager gameManager;
     public float moveSpeed = 5f;
+    public float moveDuration = 1f; // Pawn hareket süresi
+    public float delayBetweenPawns = 0.2f; // Pawn hareketleri arasındaki gecikme
+    public float jumpPower = 1f; // Pawn'ın yukarı zıplama gücü
+    public int numJumps = 1; // Pawn'ın zıplama sayısı
 
     public List<Pawn> easyPawns; // Kolay zorluk piyonlarý
     public List<Pawn> mediumPawns; // Orta zorluk piyonlarý
     public List<Pawn> hardPawns; // Zor zorluk piyonlarý
+    Dictionary<float, GridCell> gridCellsSimilaritys = new Dictionary<float, GridCell>();
 
     public void DetermineBotTargets()
     {
-        // Listeyi rastgele karýþtýr
+        // Listeyi rastgele karıştır
         Shuffle(gameManager.botPawns);
 
-        // Piyonlarý zorluk seviyelerine göre ayýr
+        // Piyonları zorluk seviyelerine göre ayır
         int totalPawns = gameManager.botPawns.Count;
-        int easyCount = Mathf.CeilToInt(totalPawns * 0.33f); // Kolay zorluk piyonlarý
-        int mediumCount = Mathf.CeilToInt(totalPawns * 0.33f); // Orta zorluk piyonlarý
-        int hardCount = totalPawns - easyCount - mediumCount; // Zor zorluk piyonlarý
+        int easyCount = Mathf.CeilToInt(totalPawns * 0.33f); // Kolay zorluk piyonları
+        int mediumCount = Mathf.CeilToInt(totalPawns * 0.33f); // Orta zorluk piyonları
+        int hardCount = totalPawns - easyCount - mediumCount; // Zor zorluk piyonları
 
         easyPawns = gameManager.botPawns.GetRange(0, easyCount);
         mediumPawns = gameManager.botPawns.GetRange(easyCount, mediumCount);
-
         hardPawns = gameManager.botPawns.GetRange(easyCount + mediumCount, hardCount);
 
         foreach (var pawn in easyPawns)
@@ -68,104 +72,99 @@ public class AIManager : MonoBehaviour
             list[n] = value;
         }
     }
+
     void SetNewTarget(Pawn pawn, Difficulty difficulty)
     {
-        List<GridCell> allGridCells = new List<GridCell>();
-        
+        List<GridCell> easyTargets;
+        List<GridCell> mediumTargets;
+        List<GridCell> hardTargets;
+        ClassifyGridCellsByDifficulty(out easyTargets, out mediumTargets, out hardTargets);
+
+        if (difficulty == Difficulty.Easy)
+        {
+            pawn.targetGrid = easyTargets[Random.Range(0, easyTargets.Count)];
+        }
+        else if (difficulty == Difficulty.Medium)
+        {
+            pawn.targetGrid = mediumTargets[Random.Range(0, mediumTargets.Count)];
+        }
+        else if (difficulty == Difficulty.Hard)
+        {
+            pawn.targetGrid = hardTargets[Random.Range(0, hardTargets.Count)];
+        }
+        pawn.similarity = gameManager.CalculateDistancePercentage(gameManager.targetGrid, pawn.targetGrid);
+        pawn.targetGrid.vector.y = 1.5f;
+        pawn.isMoving = true;
+        pawn.targetGrid.isEmpty = false;
+    }
+
+    void TakeGridCellsAndFindSimilarity(List<KeyValuePair<float, GridCell>> gridCellsSimilaritys)
+    {
         foreach (GridCell cell in gridManager.gridDictionary.Values)
         {
-            if (cell.isEmpty == true)
-            {
-                allGridCells.Add(cell);
-            }
+            float similarity = gameManager.CalculateDistancePercentage(gameManager.targetGrid, cell);
+            gridCellsSimilaritys.Add(new KeyValuePair<float, GridCell>(similarity, cell));
         }
-        GridCell targetGrid = allGridCells[(Random.Range(0, allGridCells.Count))];
-        if (targetGrid.isEmpty == true)
+    }
+
+    void ClassifyGridCellsByDifficulty(out List<GridCell> easyTargets, out List<GridCell> mediumTargets, out List<GridCell> hardTargets)
+    {
+        List<KeyValuePair<float, GridCell>> gridCellsSimilaritys = new List<KeyValuePair<float, GridCell>>();
+        TakeGridCellsAndFindSimilarity(gridCellsSimilaritys);
+
+        easyTargets = new List<GridCell>();
+        mediumTargets = new List<GridCell>();
+        hardTargets = new List<GridCell>();
+
+        foreach (var pair in gridCellsSimilaritys)
         {
-            pawn.targetPosition = targetGrid.vector;
-            pawn.targetPosition.y = 1.5f;
-            pawn.isMoving = true;
-            targetGrid.isEmpty = false;
+            if (pair.Key < 60 && pair.Value.isEmpty)
+            {
+                easyTargets.Add(pair.Value);
+            }
+            else if (pair.Key >= 60 && pair.Key < 80 && pair.Value.isEmpty)
+            {
+                mediumTargets.Add(pair.Value);
+            }
+            else if (pair.Key >= 80 && pair.Key <= 95 && pair.Value.isEmpty)
+            {
+                hardTargets.Add(pair.Value);
+            }
         }
     }
 
     public void MovePawnsTowardsTarget(List<Pawn> pawns)
     {
+        Sequence moveSequence = DOTween.Sequence();
+
         foreach (var pawn in pawns)
         {
             if (!pawn.isMoving) continue;
 
-            // Hedef pozisyona doğru hareket et
-            pawn.transform.DOMove(pawn.targetPosition, 1f).OnComplete(() =>
-            {
-                // Piyon hedefe ulaştığında yeni hedef belirle
-                if (Vector3.Distance(pawn.transform.position, pawn.targetPosition) < 0.1f)
-                {
-                    PerformActionOnGrid(pawn);
-                    SetNewTarget(pawn, pawn.difficulty);
-                }
-            });
+            // Pawn'ı hedef pozisyona hareket ettir
+            moveSequence.Append(pawn.transform.DOJump(pawn.targetGrid.vector, jumpPower, numJumps, moveDuration));
+
+            // Her bir pawn hareketi arasında gecikme ekle
+            moveSequence.AppendInterval(delayBetweenPawns);
         }
     }
 
 
     void PerformActionOnGrid(Pawn pawn)
     {
-        float similarity;
-        bool success = false;
         foreach (GridCell cell in gridManager.gridDictionary.Values)
         {
-            if (pawn.targetPosition == cell.vector)
+            if (pawn.targetGrid == cell)
             {
-                similarity = gameManager.CalculateDistancePercentage(gameManager.targetGrid, cell);
-                Debug.Log("Similarty =" + similarity);
-
-                switch (pawn.difficulty)
-                {
-                    case Difficulty.Easy:
-                        success = (similarity >= 50); // Kolay botlar %50 doðruluk payýna sahip
-                        break;
-                    case Difficulty.Medium:
-                        success = similarity >= 70; // Orta botlar %70 doðruluk payýna sahip
-                        break;
-                    case Difficulty.Hard:
-                        success = similarity >= 90; // Zor botlar %90 doðruluk payýna sahip
-                        break;
-                }
+                pawn.similarity = gameManager.CalculateDistancePercentage(gameManager.targetGrid, cell);
+                Debug.Log(pawn.similarity);
             }
         }
-
-        if (success)
-        {
-            pawn.levelPassed++;
-            if (pawn.levelPassed >= GetEliminationLevel(pawn.difficulty))
-            {
-                EliminatePawn(pawn);
-            }
-        }
-        else
-        {
-            pawn.levelPassed = 0; // Baþarýsýz olursa geçilen seviye sýfýrlanýr
-        }
     }
-    int GetEliminationLevel(Difficulty difficulty)
+    class GridSimilarity
     {
-        switch (difficulty)
-        {
-            case Difficulty.Easy:
-                return 2;
-            case Difficulty.Medium:
-                return 5;
-            case Difficulty.Hard:
-                return 8;
-            default:
-                return 0;
-        }
-    }
-
-    public void EliminatePawn(Pawn pawn)
-    {
-        pawn.gameObject.SetActive(false);
+        public GridCell gridcell;
+        public float similarity;
     }
 
 
