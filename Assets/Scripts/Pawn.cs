@@ -12,6 +12,6 @@ public class Pawn : MonoBehaviour
     public GridCell targetGrid;
     public bool isMoving = false;
     public int levelPassed = 0;
-    public bool isSuccess = false;
+    public bool isSuccess = true;
     public float similarity;
 }

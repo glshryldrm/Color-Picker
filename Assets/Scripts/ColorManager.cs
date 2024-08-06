@@ -39,7 +39,7 @@ public class ColorManager : MonoBehaviour
     {
         GameObject fx = Instantiate(GameAssets.Instance.particlePrefab, gridCell.vector, Quaternion.identity);
         var mainModule = fx.GetComponent<ParticleSystem>().main;
-        mainModule.startColor = gridCell.color;
+        //mainModule.startColor = gridCell.color;
         GameObject.Destroy(fx, mainModule.startLifetime.constant + 1f);
     }
     //public Color CreateColor(List<Color> colors, float qNorm, float rNorm)

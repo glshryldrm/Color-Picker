@@ -48,7 +48,7 @@ MonoBehaviour:
     type: 3}
   pawnPrefab: {fileID: 1962486901351804734, guid: 92f113dc46530df44823e1b3a88ac801,
     type: 3}
-  particlePrefab: {fileID: 7810245235446376228, guid: f74938086aaf0e341bd4ebecafccfc35,
+  particlePrefab: {fileID: 4184184662799953584, guid: a248634bc9435634185e1dda9bf754f2,
     type: 3}
   sounds:
   - soundType: 1

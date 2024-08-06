@@ -835,6 +835,16 @@ PrefabInstance:
       objectReference: {fileID: 20816819}
     - target: {fileID: 7987706960245087968, guid: b5baa2cf1b4a99c47a2d8d83e4cd92e5,
         type: 3}
+      propertyPath: targetHex.q
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 7987706960245087968, guid: b5baa2cf1b4a99c47a2d8d83e4cd92e5,
+        type: 3}
+      propertyPath: targetHex.r
+      value: -4
+      objectReference: {fileID: 0}
+    - target: {fileID: 7987706960245087968, guid: b5baa2cf1b4a99c47a2d8d83e4cd92e5,
+        type: 3}
       propertyPath: numberOfPawns
       value: 7
       objectReference: {fileID: 0}

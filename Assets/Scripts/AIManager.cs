@@ -7,11 +7,12 @@ public class AIManager : MonoBehaviour
 {
     public enum Difficulty
     {
+        Default,
         Easy,
         Medium,
         Hard
     }
-    public Difficulty difficulty;
+    public Difficulty difficulty = Difficulty.Default;
     public GridManager gridManager;
     public GameManager gameManager;
     public float moveSpeed = 5f;
@@ -27,19 +28,34 @@ public class AIManager : MonoBehaviour
 
     public void DetermineBotTargets()
     {
+        List<Pawn> botPawns = new List<Pawn>();
+        foreach (Pawn pawn in gameManager.botPawns)
+        {
+            if (pawn.pawnType == Pawn.PawnType.bot)
+            {
+                botPawns.Add(pawn);
+            }
+        }
         // Listeyi rastgele karıştır
-        Shuffle(gameManager.botPawns);
+        int totalPawns, easyCount, mediumCount, hardCount;
+        Shuffle(botPawns);
+        if (botPawns.Count < 3)
+        {
+            easyCount = botPawns.Count;
+            easyPawns = botPawns.GetRange(0, easyCount);
 
-        // Piyonları zorluk seviyelerine göre ayır
-        int totalPawns = gameManager.botPawns.Count;
-        int easyCount = Mathf.CeilToInt(totalPawns * 0.33f); // Kolay zorluk piyonları
-        int mediumCount = Mathf.CeilToInt(totalPawns * 0.33f); // Orta zorluk piyonları
-        int hardCount = totalPawns - easyCount - mediumCount; // Zor zorluk piyonları
+        }
+        else
+        {
+            totalPawns = botPawns.Count;
+            easyCount = Mathf.CeilToInt(totalPawns * 0.33f); // Kolay zorluk piyonları
+            mediumCount = Mathf.CeilToInt(totalPawns * 0.33f); // Orta zorluk piyonları
+            hardCount = totalPawns - easyCount - mediumCount; // Zor zorluk piyonları
 
-        easyPawns = gameManager.botPawns.GetRange(0, easyCount);
-        mediumPawns = gameManager.botPawns.GetRange(easyCount, mediumCount);
-        hardPawns = gameManager.botPawns.GetRange(easyCount + mediumCount, hardCount);
-
+            easyPawns = botPawns.GetRange(0, easyCount);
+            mediumPawns = botPawns.GetRange(easyCount, mediumCount);
+            hardPawns = botPawns.GetRange(easyCount + mediumCount, hardCount);
+        }
         foreach (var pawn in easyPawns)
         {
             pawn.difficulty = Difficulty.Easy;
@@ -139,111 +155,16 @@ public class AIManager : MonoBehaviour
 
         foreach (var pawn in pawns)
         {
-            if (!pawn.isMoving) continue;
+            if (!pawn.isMoving || pawn.pawnType == Pawn.PawnType.player) continue;
 
-            // Pawn'ı hedef pozisyona hareket ettir
             moveSequence.Append(pawn.transform.DOJump(pawn.targetGrid.vector, jumpPower, numJumps, moveDuration));
 
-            // Her bir pawn hareketi arasında gecikme ekle
             moveSequence.AppendInterval(delayBetweenPawns);
         }
-    }
 
-
-    void PerformActionOnGrid(Pawn pawn)
-    {
-        foreach (GridCell cell in gridManager.gridDictionary.Values)
+        moveSequence.OnComplete(() =>
         {
-            if (pawn.targetGrid == cell)
-            {
-                pawn.similarity = gameManager.CalculateDistancePercentage(gameManager.targetGrid, cell);
-                Debug.Log(pawn.similarity);
-            }
-        }
+            gameManager.FindSucsesPawns();
+        });
     }
-    class GridSimilarity
-    {
-        public GridCell gridcell;
-        public float similarity;
-    }
-
-
-    //public void DetermineBotTargets(List<Pawn> botPawns)
-    //{
-    //    foreach (var bot in botPawns)
-    //    {
-    //        Vector3 targetPosition = SelectBotTarget(bot.position);
-    //        if (targetPosition != Vector3.zero)
-    //        {
-    //            TeleportBotToTarget(bot, targetPosition);
-    //        }
-    //    }
-    //}
-    //private Vector3 SelectBotTarget(Vector3 botPosition)
-    //{
-    //    Vector3 targetPosition = Vector3.zero;
-    //    float bestSimilarity = difficulty == Difficulty.Hard ? float.MaxValue : float.MinValue;
-
-    //    foreach (var cell in gridManager.gridDictionary)
-    //    {
-    //        float similarity = CalculateSimilarity(cell.Value.vector, botPosition);
-
-    //        if (difficulty == Difficulty.Easy)
-    //        {
-    //            // For Easy AI, choose the farthest cell
-    //            if (similarity < bestSimilarity)
-    //            {
-    //                bestSimilarity = similarity;
-    //                targetPosition = cell.Value.vector;
-    //            }
-    //        }
-    //        else if (difficulty == Difficulty.Medium)
-    //        {
-    //            // For Medium AI, choose a random cell within a range of similarity
-    //            float range = 20f; // Adjust the range as needed
-    //            if (similarity > bestSimilarity - range && similarity < bestSimilarity + range)
-    //            {
-    //                bestSimilarity = similarity;
-    //                targetPosition = cell.Value.vector;
-    //            }
-    //        }
-    //        else if (difficulty == Difficulty.Hard)
-    //        {
-    //            // For Hard AI, choose the closest cell
-    //            if (similarity > bestSimilarity)
-    //            {
-    //                bestSimilarity = similarity;
-    //                targetPosition = cell.Value.vector;
-    //            }
-    //        }
-    //    }
-
-    //    return targetPosition;
-    //}
-    //private float CalculateSimilarity(Vector3 targetPosition, Vector3 botPosition)
-    //{
-    //    float manhattanDistance = Mathf.Abs(botPosition.x - targetPosition.x) + Mathf.Abs(botPosition.z - targetPosition.z);
-    //    float maxManhattanDistance;
-    //    if (gridManager.gridShape == GridManager.GridShapes.hexGrid)
-    //    {
-    //        maxManhattanDistance = (gridManager.radius * 2);
-    //    }
-    //    else
-    //    {
-    //        maxManhattanDistance = gridManager.width + gridManager.height - 2;
-    //    }
-
-    //    float similarity = (maxManhattanDistance - manhattanDistance) / maxManhattanDistance * 100;
-    //    similarity = Mathf.Ceil(similarity);
-    //    //similarityText.text = "Similarity = %" + similarity;
-    //    return similarity;
-    //}
-
-    //private void TeleportBotToTarget(Pawn bot, Vector3 targetPosition)
-    //{
-    //    // Implement the logic to teleport the bot to the target position
-    //    bot.transform.position = targetPosition;
-    //    bot.position = targetPosition;
-    //    // Additional logic to update the bot's state or animation can be added here
-    //}
 }

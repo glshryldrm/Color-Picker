@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: -4707761815567814844}
   - component: {fileID: 6791071572862715025}
   - component: {fileID: 5239707945106242536}
+  - component: {fileID: 3784970543497067669}
   m_Layer: 0
   m_Name: pawnPrefab
   m_TagString: Untagged
@@ -31,7 +32,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 0.5, y: 0.5, z: 0.5}
-  m_ConstrainProportionsScale: 1
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -120,4 +121,33 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 27d6f2dfd79630f43a96168a44098a79, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  position: {x: 0, y: 0, z: 0}
+  color: {r: 0, g: 0, b: 0, a: 0}
   difficulty: 0
+  pawnType: 0
+  targetGrid: {fileID: 0}
+  isMoving: 0
+  levelPassed: 0
+  isSuccess: 1
+  similarity: 0
+--- !u!95 &3784970543497067669
+Animator:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1962486901351804734}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 5541cda6fce095b4da5c46521c55f391, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 1
+  m_ApplyRootMotion: 1
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
