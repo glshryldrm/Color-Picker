@@ -50,14 +50,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   gridManager: {fileID: 0}
   colorManager: {fileID: 1486546083418321032}
-  similarityText: {fileID: 0}
   levelManager: {fileID: 375372869293938300}
-  targetHex:
-    q: 3
-    r: -3
+  similarityText: {fileID: 0}
   targetGrid: {fileID: 0}
-  levelTarget: 70
-  numberOfPawns: 7
   aIManager: {fileID: 1028229130016948290}
   botPawns: []
 --- !u!114 &1486546083418321032
@@ -73,9 +68,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   colors:
-  - {r: 0, g: 0.006503105, b: 1, a: 1}
-  - {r: 0, g: 0.8967843, b: 1, a: 1}
-  - {r: 0, g: 1, b: 0.61615276, a: 1}
+  - {r: 0.44906616, g: 0, b: 0, a: 1}
+  - {r: 1, g: 0.98979574, b: 0, a: 1}
+  - {r: 0, g: 0.0911839, b: 1, a: 0}
+  - {r: 0.0075228214, g: 1, b: 0, a: 1}
   gridManager: {fileID: 0}
 --- !u!114 &5965131390396929538
 MonoBehaviour:
@@ -122,7 +118,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9716b27fb97c06d42baee424d0d022b8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  difficulty: 0
+  pawns:
+  - successCount: 3
+  - successCount: 2
+  - successCount: 1
+  - successCount: 1
   gridManager: {fileID: 0}
   gameManager: {fileID: 7987706960245087968}
   moveSpeed: 5
@@ -130,6 +130,4 @@ MonoBehaviour:
   delayBetweenPawns: 0.2
   jumpPower: 1
   numJumps: 1
-  easyPawns: []
-  mediumPawns: []
-  hardPawns: []
+  levelDiffuculty: 60
