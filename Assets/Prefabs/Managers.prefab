@@ -50,16 +50,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   gridManager: {fileID: 0}
   colorManager: {fileID: 1486546083418321032}
-  playerPawn: {fileID: 0}
   similarityText: {fileID: 0}
   levelManager: {fileID: 375372869293938300}
   targetHex:
-    q: 0
-    r: 0
+    q: 3
+    r: -3
   targetGrid: {fileID: 0}
-  selectedGrid: {fileID: 0}
   levelTarget: 70
-  numberOfPawns: 6
+  numberOfPawns: 7
   aIManager: {fileID: 1028229130016948290}
   botPawns: []
 --- !u!114 &1486546083418321032
@@ -128,6 +126,10 @@ MonoBehaviour:
   gridManager: {fileID: 0}
   gameManager: {fileID: 7987706960245087968}
   moveSpeed: 5
+  moveDuration: 1
+  delayBetweenPawns: 0.2
+  jumpPower: 1
+  numJumps: 1
   easyPawns: []
   mediumPawns: []
   hardPawns: []

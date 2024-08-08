@@ -178,6 +178,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: pawnPrefab
       objectReference: {fileID: 0}
+    - target: {fileID: 1962486901351804734, guid: 92f113dc46530df44823e1b3a88ac801,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3481600288488873758, guid: 92f113dc46530df44823e1b3a88ac801,
         type: 3}
       propertyPath: m_LocalScale.x
@@ -733,7 +738,7 @@ PrefabInstance:
     - target: {fileID: 7110576047749969749, guid: 1b9e584300787844fb8a3501da2d2bba,
         type: 3}
       propertyPath: radius
-      value: 3
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 7110576047749969749, guid: 1b9e584300787844fb8a3501da2d2bba,
         type: 3}
@@ -773,6 +778,16 @@ PrefabInstance:
       propertyPath: gridManager
       value: 
       objectReference: {fileID: 20816819}
+    - target: {fileID: 1486546083418321032, guid: b5baa2cf1b4a99c47a2d8d83e4cd92e5,
+        type: 3}
+      propertyPath: colors.Array.data[0].g
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1486546083418321032, guid: b5baa2cf1b4a99c47a2d8d83e4cd92e5,
+        type: 3}
+      propertyPath: colors.Array.data[0].r
+      value: 0.44906616
+      objectReference: {fileID: 0}
     - target: {fileID: 3801003982879763214, guid: b5baa2cf1b4a99c47a2d8d83e4cd92e5,
         type: 3}
       propertyPath: m_LocalPosition.x

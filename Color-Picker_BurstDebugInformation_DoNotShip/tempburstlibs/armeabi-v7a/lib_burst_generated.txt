@@ -10,6 +10,7 @@ Library: C:\Users\glshr\OneDrive\Belgeler\unity\Color-Picker\Temp\BurstOutput\te
 --target-framework=NetFramework
 --float-mode=Fast
 --assembly-defines=UnityEngine;
+--assembly-defines=Assembly-CSharp-firstpass;
 --assembly-defines=Assembly-CSharp;
 --assembly-defines=Unity.RenderPipelines.Core.Runtime;
 --assembly-defines=Unity.Analytics.DataPrivacy;
@@ -43,6 +44,7 @@ Library: C:\Users\glshr\OneDrive\Belgeler\unity\Color-Picker\Temp\BurstOutput\te
 --assembly-defines=Unity.RenderPipelines.Universal.Shaders;
 --assembly-defines=Unity.Services.Core.Registration;
 --assembly-defines=Unity.VisualScripting.State;
+--assembly-defines=DOTween;
 --assembly-defines=Unity.VisualScripting.Antlr3.Runtime;
 --assembly-defines=Unity.Burst.Unsafe;
 --assembly-defines=Newtonsoft.Json;
@@ -86,6 +88,7 @@ Library: C:\Users\glshr\OneDrive\Belgeler\unity\Color-Picker\Temp\BurstOutput\te
 --float-precision=Standard
 --target-framework=NetFramework
 --assembly-defines=UnityEngine;
+--assembly-defines=Assembly-CSharp-firstpass;
 --assembly-defines=Assembly-CSharp;
 --assembly-defines=Unity.RenderPipelines.Core.Runtime;
 --assembly-defines=Unity.Analytics.DataPrivacy;
@@ -119,6 +122,7 @@ Library: C:\Users\glshr\OneDrive\Belgeler\unity\Color-Picker\Temp\BurstOutput\te
 --assembly-defines=Unity.RenderPipelines.Universal.Shaders;
 --assembly-defines=Unity.Services.Core.Registration;
 --assembly-defines=Unity.VisualScripting.State;
+--assembly-defines=DOTween;
 --assembly-defines=Unity.VisualScripting.Antlr3.Runtime;
 --assembly-defines=Unity.Burst.Unsafe;
 --assembly-defines=Newtonsoft.Json;
