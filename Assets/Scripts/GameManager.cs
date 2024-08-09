@@ -4,7 +4,7 @@ using UnityEngine;
 using TMPro;
 using DG.Tweening;
 using System.Linq;
-
+using Scrtwpns.Mixbox;
 public class GameManager : MonoBehaviour
 {
     [SerializeField] GridManager gridManager;
@@ -16,6 +16,8 @@ public class GameManager : MonoBehaviour
     [HideInInspector] public GridCell targetGrid;
     public AIManager aIManager;
     [HideInInspector] public List<Pawn> botPawns;
+    bool levelCompleteSoundPlayed = false;
+    bool levelFailedSoundPlayed = false;
 
     private void Start()
     {
@@ -147,12 +149,13 @@ public class GameManager : MonoBehaviour
         selectedGrid.vector.y = 1.5f;
         InputManager.touchCheck = false;
         playerPawn.GetComponent<Pawn>().similarity = CalculateDistancePercentage(targetGrid, selectedGrid);
+        
         playerPawn.GetComponent<Pawn>().targetGrid = selectedGrid;
         playerPawn.transform.DOJump(selectedGrid.vector, aIManager.jumpPower, aIManager.numJumps, aIManager.moveDuration).OnComplete(() =>
         {
 
             colorManager.SetParticleColor(selectedGrid);
-            SoundManager.PlaySound(GameAssets.SoundType.bubble);
+            SoundManager.PlaySound(GameAssets.SoundType.hit);
             InputManager.touchCheck = false;
             selectedGrid.isEmpty = false;
             PrintPlayerSimilarty();
@@ -176,8 +179,28 @@ public class GameManager : MonoBehaviour
         }
 
         similarity = (maxManhattanDistance - manhattanDistance) / maxManhattanDistance * 100;
+        similarity = Mathf.Clamp(similarity, 0f, 100f);
+
         similarity = Mathf.Ceil(similarity);
         return similarity;
+    }
+    public float CalculateColorSimilarty(GridCell targetGrid, GridCell selectedGrid)
+    {
+        // Hedef rengi latent uzaya dönüþtür
+        MixboxLatent target = Mixbox.RGBToLatent(targetGrid.color);
+
+        // Karþýlaþtýrýlan rengi latent uzaya dönüþtür ve hedefle arasýndaki farký hesapla
+        MixboxLatent diff = target - Mixbox.RGBToLatent(selectedGrid.color);
+
+        // Farkýn her bir bileþeni için mutlak deðerini al ve ortalamasýný hesapla
+        float d = (Mathf.Abs(diff.c0) + Mathf.Abs(diff.c1) + Mathf.Abs(diff.c2) + Mathf.Abs(diff.c3)) / 4f;
+
+        // Benzerlik yüzdesini hesapla (100 - ortalama fark)
+        float similarPercent = 100 - (d * 100f);
+
+        // Eðer bu benzerlik yüzdesi mevcut maksimumdan büyükse, maxRate'i güncelle
+        return similarPercent;
+
     }
     void PrintPlayerSimilarty()
     {
@@ -217,6 +240,7 @@ public class GameManager : MonoBehaviour
         Invoke(nameof(DestroyFailPawns), 1f);
         Invoke(nameof(SetPawnsPosition), 2f);
         Fall2AnimStart();
+
     }
     void Fall2AnimStart()
     {
@@ -251,7 +275,7 @@ public class GameManager : MonoBehaviour
                     pawn.botPawns.successCount -= 1;
                 }
             }
-            
+
         }
         FallAnimStart();
         Invoke(nameof(GetEmptyGrids), 3f);
@@ -288,21 +312,25 @@ public class GameManager : MonoBehaviour
     }
     void CheckLevelComplate()
     {
-        bool playerExists = true;
+        bool playerExists = false;
 
         foreach (Pawn pawn in botPawns)
         {
             if (pawn != null && pawn.pawnType == Pawn.PawnType.player)
             {
-                playerExists = false;
-                if (botPawns.Count == 1)
+                playerExists = true;
+                if (botPawns.Count == 1 && !levelCompleteSoundPlayed)
+                {
+                    SoundManager.PlaySound(GameAssets.SoundType.success);
                     levelManager.LoadNextLevel();
-
+                    levelCompleteSoundPlayed = true;
+                }
             }
-            if (playerExists)
+            if (!playerExists && !levelFailedSoundPlayed)
             {
+                SoundManager.PlaySound(GameAssets.SoundType.fail);
                 levelManager.ReloadLevel();
-                return;
+                levelFailedSoundPlayed = true;
             }
         }
     }

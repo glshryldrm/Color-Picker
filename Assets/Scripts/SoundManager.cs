@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class SoundManager : MonoBehaviour
+public static class SoundManager
 {
     public static void PlaySound(GameAssets.SoundType soundType)
     {

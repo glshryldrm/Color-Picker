@@ -11,8 +11,9 @@ public class GameAssets : MonoBehaviour
     public GameObject particlePrefab;
     public enum SoundType
     {
-        click,
-        bubble
+        hit,
+        success,
+        fail
     }
     public List<Sound> sounds = new List<Sound>();
     public static GameAssets Instance

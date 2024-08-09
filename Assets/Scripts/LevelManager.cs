@@ -8,16 +8,24 @@ public class LevelManager : MonoBehaviour
     [SerializeField] List<string> levels = new List<string>();
     public Animator transition;
     string levelKey = "currentLevel";
-    public void ReloadLevel()
+    void ReloaadLevelPrivate()
     {
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
-
-    public void LoadNextLevel()
+    public void ReloadLevel()
     {
+        Invoke(nameof(ReloaadLevelPrivate), 0.5f);
+    }
+    void LoadNextLevelPrivate()
+    {
+
         int currentLevel = PlayerPrefs.GetInt(levelKey);
         int nextLevel = currentLevel + 1;
         LoadLevel(nextLevel);
+    }
+    public void LoadNextLevel()
+    {
+        Invoke(nameof(LoadNextLevelPrivate), 0.5f);
     }
     public void LoadLevel(int level)
     {

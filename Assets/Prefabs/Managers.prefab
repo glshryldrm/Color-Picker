@@ -125,6 +125,7 @@ MonoBehaviour:
   - successCount: 1
   gridManager: {fileID: 0}
   gameManager: {fileID: 7987706960245087968}
+  colorManager: {fileID: 1486546083418321032}
   moveSpeed: 5
   moveDuration: 1
   delayBetweenPawns: 0.2

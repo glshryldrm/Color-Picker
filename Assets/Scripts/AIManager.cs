@@ -8,6 +8,7 @@ public class AIManager : MonoBehaviour
     public List<BotPawns> pawns = new List<BotPawns>();
     public GridManager gridManager;
     public GameManager gameManager;
+    public ColorManager colorManager;
     public float moveSpeed = 5f;
     public float moveDuration = 1f; // Pawn hareket süresi
     public float delayBetweenPawns = 0.2f; // Pawn hareketleri arasındaki gecikme
@@ -40,6 +41,7 @@ public class AIManager : MonoBehaviour
         {
             pawn.targetGrid = successTargets[Random.Range(0, successTargets.Count)];
             pawn.similarity = gameManager.CalculateDistancePercentage(gameManager.targetGrid, pawn.targetGrid);
+            
             pawn.targetGrid.vector.y = 1.5f;
             pawn.targetGrid.isEmpty = false;
         }
@@ -47,6 +49,7 @@ public class AIManager : MonoBehaviour
         {
             pawn.targetGrid = failTargets[Random.Range(0, failTargets.Count)];
             pawn.similarity = gameManager.CalculateDistancePercentage(gameManager.targetGrid, pawn.targetGrid);
+            
             pawn.targetGrid.vector.y = 1.5f;
             pawn.targetGrid.isEmpty = false;
         }
@@ -56,6 +59,7 @@ public class AIManager : MonoBehaviour
         foreach (GridCell cell in gridManager.gridDictionary.Values)
         {
             float similarity = gameManager.CalculateDistancePercentage(gameManager.targetGrid, cell);
+           
             gridCellsSimilaritys.Add(new KeyValuePair<float, GridCell>(similarity, cell));
         }
     }
@@ -67,7 +71,7 @@ public class AIManager : MonoBehaviour
         failTargets = new List<GridCell>();
         foreach (var pair in gridCellsSimilaritys)
         {
-            if (pair.Key < levelDifficulty && pair.Value.isEmpty == true) 
+            if (pair.Key < levelDifficulty && pair.Value.isEmpty == true)
             {
                 failTargets.Add(pair.Value);
             }
@@ -85,7 +89,15 @@ public class AIManager : MonoBehaviour
         {
             if (pawn.pawnType == Pawn.PawnType.player) continue;
 
-            moveSequence.Append(pawn.transform.DOJump(pawn.targetGrid.vector, jumpPower, numJumps, moveDuration));
+            moveSequence.Append(pawn.transform.DOJump(pawn.targetGrid.vector, jumpPower, numJumps, moveDuration)
+            .OnStepComplete(() =>
+            {
+                colorManager.SetParticleColor(pawn.targetGrid);
+                SoundManager.PlaySound(GameAssets.SoundType.hit);
+            })
+        );
+
+
             moveSequence.AppendInterval(delayBetweenPawns);
         }
 
@@ -96,7 +108,8 @@ public class AIManager : MonoBehaviour
     }
 }
 [System.Serializable]
-public class BotPawns { 
+public class BotPawns
+{
 
     public int successCount;
 

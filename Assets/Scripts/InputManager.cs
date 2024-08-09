@@ -36,6 +36,7 @@ public class InputManager : MonoBehaviour
                         {
                             gameManager.PlacePlayerPawn(hit.collider.GetComponentInParent<GridCell>());
                             gameManager.CalculateDistancePercentage(gameManager.targetGrid, hit.collider.GetComponentInParent<GridCell>());
+                           
                             
                             touch.phase = TouchPhase.Ended;
                         }

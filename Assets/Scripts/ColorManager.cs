@@ -37,7 +37,9 @@ public class ColorManager : MonoBehaviour
     }
     public void SetParticleColor(GridCell gridCell)
     {
-        GameObject fx = Instantiate(GameAssets.Instance.particlePrefab, gridCell.vector, Quaternion.identity);
+        Vector3 position = gridCell.vector;
+        position.y = 1;
+        GameObject fx = Instantiate(GameAssets.Instance.particlePrefab, position, Quaternion.identity);
         var mainModule = fx.GetComponent<ParticleSystem>().main;
         //mainModule.startColor = gridCell.color;
         GameObject.Destroy(fx, mainModule.startLifetime.constant + 1f);
