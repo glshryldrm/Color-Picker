@@ -7,9 +7,7 @@ using System.Linq;
 using Scrtwpns.Mixbox;
 public class GameManager : MonoBehaviour
 {
-    [SerializeField] GridManager gridManager;
     [SerializeField] ColorManager colorManager;
-    [SerializeField] LevelManager levelManager;
     GameObject playerPawn;
     [SerializeField] TextMeshProUGUI similarityText;
     Hex targetHex;
@@ -27,7 +25,7 @@ public class GameManager : MonoBehaviour
     }
     private void Awake()
     {
-        gridManager.CreateHexGrid();
+        GridManager.Instance.CreateHexGrid();
         FindGridsColor();
         QualitySettings.vSyncCount = 0;
         Application.targetFrameRate = 60;
@@ -44,12 +42,12 @@ public class GameManager : MonoBehaviour
     }
     void PlacePawnsAroundHexGrid()
     {
-        if (gridManager.gridDictionary == null || gridManager.gridDictionary.Count == 0) return;
+        if (GridManager.Instance.gridDictionary == null || GridManager.Instance.gridDictionary.Count == 0) return;
 
         botPawns = new List<Pawn>();
 
         List<Vector3> hexBoundaryPositions;
-        GetHexagonBoundaryPositions(aIManager.pawns.Count + 1, gridManager.radius + 1, out hexBoundaryPositions);
+        GetHexagonBoundaryPositions(aIManager.pawns.Count + 1, GridManager.Instance.radius + 1, out hexBoundaryPositions);
 
         Vector3 playerPawnPosition = hexBoundaryPositions[0];
         playerPawn = Instantiate(GameAssets.Instance.pawnPrefab, playerPawnPosition, Quaternion.identity);
@@ -82,7 +80,7 @@ public class GameManager : MonoBehaviour
     }
     void CreatePlayerPawn()
     {
-        int radius = gridManager.radius;
+        int radius = GridManager.Instance.radius;
         Vector3 position = new Vector3(0, 0.5f, -(radius + 1));
         playerPawn = Instantiate(GameAssets.Instance.pawnPrefab, position, Quaternion.identity);
         playerPawn.GetComponent<Pawn>().pawnType = Pawn.PawnType.player;
@@ -112,14 +110,14 @@ public class GameManager : MonoBehaviour
     {
         InputManager.touchCheck = false;
 
-        foreach (KeyValuePair<Hex, GridCell> pair in gridManager.gridDictionary)
+        foreach (KeyValuePair<Hex, GridCell> pair in GridManager.Instance.gridDictionary)
         {
             pair.Value.GridCellColor = colorManager.CalculateCellColor(pair.Key.q, pair.Key.r);
         }
     }
     void SetGridsColor()
     {
-        foreach (KeyValuePair<Hex, GridCell> pair in gridManager.gridDictionary)
+        foreach (KeyValuePair<Hex, GridCell> pair in GridManager.Instance.gridDictionary)
         {
             pair.Value.SetColor();
 
@@ -129,7 +127,7 @@ public class GameManager : MonoBehaviour
     void FindTargetGridColor()
     {
         ChooseRandomTargetGrid();
-        foreach (KeyValuePair<Hex, GridCell> pair in gridManager.gridDictionary)
+        foreach (KeyValuePair<Hex, GridCell> pair in GridManager.Instance.gridDictionary)
         {
             if (pair.Key.Equals(targetHex))
             {
@@ -141,8 +139,8 @@ public class GameManager : MonoBehaviour
     }
     void ChooseRandomTargetGrid()
     {
-        int random = Random.Range(0, gridManager.gridDictionary.Count);
-        targetHex = gridManager.gridDictionary.Keys.ElementAt(random);
+        int random = Random.Range(0, GridManager.Instance.gridDictionary.Count);
+        targetHex = GridManager.Instance.gridDictionary.Keys.ElementAt(random);
     }
     public void PlacePlayerPawn(GridCell selectedGrid)
     {
@@ -169,13 +167,13 @@ public class GameManager : MonoBehaviour
         float similarity;
         float manhattanDistance = Mathf.Abs(selectedGrid.vector.x - targetGrid.vector.x) + Mathf.Abs(selectedGrid.vector.z - targetGrid.vector.z);
         float maxManhattanDistance;
-        if (gridManager.gridShape == GridManager.GridShapes.hexGrid)
+        if (GridManager.Instance.gridShape == GridManager.GridShapes.hexGrid)
         {
-            maxManhattanDistance = (gridManager.radius * 2);
+            maxManhattanDistance = (GridManager.Instance.radius * 2);
         }
         else
         {
-            maxManhattanDistance = gridManager.width + gridManager.height - 2;
+            maxManhattanDistance = GridManager.Instance.width + GridManager.Instance.height - 2;
         }
 
         similarity = (maxManhattanDistance - manhattanDistance) / maxManhattanDistance * 100;
@@ -209,12 +207,12 @@ public class GameManager : MonoBehaviour
     private IEnumerator ShowTargetGrid()
     {
         yield return new WaitForSeconds(2f);
-        foreach (KeyValuePair<Hex, GridCell> pair in gridManager.gridDictionary)
+        foreach (KeyValuePair<Hex, GridCell> pair in GridManager.Instance.gridDictionary)
         {
             pair.Value.SetColor(targetGrid.color);
         }
         yield return new WaitForSeconds(3f);
-        foreach (KeyValuePair<Hex, GridCell> pair in gridManager.gridDictionary)
+        foreach (KeyValuePair<Hex, GridCell> pair in GridManager.Instance.gridDictionary)
         {
             pair.Value.SetColor(Color.white);
         }
@@ -223,32 +221,38 @@ public class GameManager : MonoBehaviour
     }
     void FallAnimStart()
     {
-        foreach (GridCell pair in gridManager.gridDictionary.Values)
+        foreach (GridCell pair in GridManager.Instance.gridDictionary.Values)
         {
             if (pair.isEmpty == true)
             {
-                pair.GetComponentInChildren<Animator>().SetBool("isEmpty", true);
+                //pair.EnableRb(true, Random.Range(0f,1f));
+                pair.transform.DOMoveY(-5, 1).SetDelay(Random.Range(0f,1f)).SetEase(Ease.InExpo).OnComplete(()=> pair.gameObject.SetActive(false));
             }
         }
         foreach (Pawn pawn in botPawns)
         {
             if (pawn.targetGrid.isEmpty == true)
             {
-                pawn.GetComponentInChildren<Animator>().SetBool("isSucsess", true);
+                //pawn.GetComponentInChildren<Animator>().SetBool("isSucsess", true);
             }
         }
         Invoke(nameof(DestroyFailPawns), 1f);
-        Invoke(nameof(SetPawnsPosition), 2f);
-        Fall2AnimStart();
+        //Invoke(nameof(SetPawnsPosition), 2f);
+        Invoke(nameof(Fall2AnimStart), 3f);
+
+       // Fall2AnimStart();
 
     }
     void Fall2AnimStart()
     {
-        foreach (GridCell pair in gridManager.gridDictionary.Values)
+        foreach (GridCell pair in GridManager.Instance.gridDictionary.Values)
         {
             if (pair.isEmpty == true)
-            {
-                pair.GetComponentInChildren<Animator>().SetBool("isFall", true);
+            {   
+                pair.transform.position = new Vector3(pair.transform.position.x,Camera.main.transform.position.y+5, pair.transform.position.z);
+                pair.gameObject.SetActive(true);
+                pair.transform.DOMove(pair.vector, 1.5f).SetDelay(Random.Range(0f, 1f)).SetEase(Ease.InOutExpo).OnComplete(()=> pair.transform.position = pair.vector);
+
             }
         }
         Initialize();
@@ -301,11 +305,8 @@ public class GameManager : MonoBehaviour
     }
     void GetEmptyGrids()
     {
-        foreach (GridCell cell in gridManager.gridDictionary.Values)
-        {
-            cell.GetComponentInChildren<Animator>().SetBool("isFall", false);
-            cell.GetComponentInChildren<Animator>().SetBool("isEmpty", false);
-            cell.GetComponentInChildren<Animator>().SetBool("isRepeat", true);
+        foreach (GridCell cell in GridManager.Instance.gridDictionary.Values)
+        {            
             cell.isEmpty = true;
         }
         InputManager.touchCheck = true;
@@ -322,14 +323,14 @@ public class GameManager : MonoBehaviour
                 if (botPawns.Count == 1 && !levelCompleteSoundPlayed)
                 {
                     SoundManager.PlaySound(GameAssets.SoundType.success);
-                    levelManager.LoadNextLevel();
+                    LevelManager.Instance.LoadNextLevel();
                     levelCompleteSoundPlayed = true;
                 }
             }
             if (!playerExists && !levelFailedSoundPlayed)
             {
                 SoundManager.PlaySound(GameAssets.SoundType.fail);
-                levelManager.ReloadLevel();
+                LevelManager.Instance.ReloadLevel();
                 levelFailedSoundPlayed = true;
             }
         }

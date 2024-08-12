@@ -6,7 +6,6 @@ using Scrtwpns.Mixbox;
 public class ColorManager : MonoBehaviour
 {
     [SerializeField] List<Color> colors;
-    [SerializeField] GridManager gridManager;
 
     public Color CalculateCellColor(int q, int r)
     {
@@ -18,18 +17,18 @@ public class ColorManager : MonoBehaviour
         Color finalColor;
         float normalizedQ = 0f;
         float normalizedR = 0f;
-        if (gridManager.gridShape == GridManager.GridShapes.hexGrid)
+        if (GridManager.Instance.gridShape == GridManager.GridShapes.hexGrid)
         {
-            int radius = gridManager.radius;
+            int radius = GridManager.Instance.radius;
 
             normalizedQ = (float)(q + radius) / (2 * radius);
             normalizedR = (float)(r + radius) / (2 * radius);
 
         }
-        else if (gridManager.gridShape == GridManager.GridShapes.rectangleGrid)
+        else if (GridManager.Instance.gridShape == GridManager.GridShapes.rectangleGrid)
         {
-            normalizedR = (float)q / (gridManager.width - 1);
-            normalizedQ = (float)r / (gridManager.height - 1);
+            normalizedR = (float)q / (GridManager.Instance.width - 1);
+            normalizedQ = (float)r / (GridManager.Instance.height - 1);
         }
 
         finalColor = CreateColor(colors, normalizedQ, normalizedR);
