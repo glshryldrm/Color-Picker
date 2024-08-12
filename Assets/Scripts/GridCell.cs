@@ -12,6 +12,12 @@ public class GridCell : MonoBehaviour
     [HideInInspector] public Hex hexCoordinates;
     public bool isEmpty = true;
 
+    Rigidbody rb;
+
+    private void Awake()
+    {
+        rb = GetComponent<Rigidbody>();
+    }
     public void Initialize(Hex coordinates)
     {
         hexCoordinates = coordinates;

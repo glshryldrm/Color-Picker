@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class GridManager : MonoBehaviour
 {
+    public static GridManager Instance;
     public int radius;
     public int width;
     public int height;
@@ -20,6 +21,10 @@ public class GridManager : MonoBehaviour
     public GridShapes gridShape;
     public Dictionary<Hex, GridCell> gridDictionary;
 
+    private void Awake()
+    {
+        Instance = this;
+    }
     private void OnDrawGizmos()
     {
         MeshRenderer meshRenderer = gizmosPrefab.GetComponentInChildren<MeshRenderer>();

@@ -6,7 +6,6 @@ using DG.Tweening;
 public class AIManager : MonoBehaviour
 {
     public List<BotPawns> pawns = new List<BotPawns>();
-    public GridManager gridManager;
     public GameManager gameManager;
     public ColorManager colorManager;
     public float moveSpeed = 5f;
@@ -56,7 +55,7 @@ public class AIManager : MonoBehaviour
     }
     void TakeGridCellsAndFindSimilarity(List<KeyValuePair<float, GridCell>> gridCellsSimilaritys)
     {
-        foreach (GridCell cell in gridManager.gridDictionary.Values)
+        foreach (GridCell cell in GridManager.Instance.gridDictionary.Values)
         {
             float similarity = gameManager.CalculateDistancePercentage(gameManager.targetGrid, cell);
            
