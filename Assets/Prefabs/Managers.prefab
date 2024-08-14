@@ -444,6 +444,11 @@ PrefabInstance:
       propertyPath: colorManager
       value: 
       objectReference: {fileID: 3573274445326458550}
+    - target: {fileID: 8848654567571764082, guid: 8427207b31e10fe4283a207c9ff4297d,
+        type: 3}
+      propertyPath: moveDuration
+      value: 0.1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

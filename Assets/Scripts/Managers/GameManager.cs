@@ -13,9 +13,11 @@ public class GameManager : MonoBehaviour
     Hex targetHex;
     [HideInInspector] public GridCell targetGrid;
     public AIManager aIManager;
-    [HideInInspector] public List<Pawn> botPawns;
+    public List<Pawn> botPawns;
     bool levelCompleteSoundPlayed = false;
     bool levelFailedSoundPlayed = false;
+    public float camMoveSpeed = 2f;
+    public float moveDistance = 15f;
 
     private void Start()
     {
@@ -30,12 +32,23 @@ public class GameManager : MonoBehaviour
         QualitySettings.vSyncCount = 0;
         Application.targetFrameRate = 60;
     }
-    private void Update()
+    void ReloadGrids()
     {
-        CheckLevelComplate();
+        Transform camTransform = Camera.main.transform;
+        Vector3 forwardPosition = Camera.main.transform.position + new Vector3(0, 0, moveDistance);
+        Camera.main.transform.DOMove(forwardPosition, camMoveSpeed).OnComplete(() =>
+        {
+            GridManager.Instance.CreateHexGrid(moveDistance);
+            FindGridsColor();
+            Initialize();
+            Fall2AnimStart();
+
+        });
+
     }
     void Initialize()
     {
+
         FindTargetGridColor();
         StartCoroutine(ShowTargetGrid());
 
@@ -58,12 +71,11 @@ public class GameManager : MonoBehaviour
         botPawns.Add(playerPawnComponent);
 
         int placedPawns = 0;
-        float minDistanceFromPlayer = 1.0f;
 
         for (int i = 1; i < hexBoundaryPositions.Count; i++)
         {
             Vector3 position = hexBoundaryPositions[i];
-            if (Vector3.Distance(position, playerPawnPosition) > minDistanceFromPlayer && placedPawns < aIManager.pawns.Count)
+            if (placedPawns < aIManager.pawns.Count)
             {
                 GameObject pawnAI = Instantiate(GameAssets.Instance.pawnPrefab, position, Quaternion.identity);
                 Pawn pawn = pawnAI.GetComponent<Pawn>();
@@ -100,7 +112,7 @@ public class GameManager : MonoBehaviour
             float angle = ((i) * angleStep) + 270f;
             float radians = angle * Mathf.Deg2Rad;
 
-            Vector3 offset = new Vector3((Mathf.Cos(radians)) * hexRadius, 0.5f, (Mathf.Sin(radians)) * hexRadius);
+            Vector3 offset = new Vector3((Mathf.Cos(radians)) * hexRadius, 0f, (Mathf.Sin(radians)) * hexRadius);
             positions.Add(offset);
 
         }
@@ -147,11 +159,10 @@ public class GameManager : MonoBehaviour
         selectedGrid.vector.y = 1.5f;
         InputManager.touchCheck = false;
         playerPawn.GetComponent<Pawn>().similarity = CalculateDistancePercentage(targetGrid, selectedGrid);
-        
+
         playerPawn.GetComponent<Pawn>().targetGrid = selectedGrid;
         playerPawn.transform.DOJump(selectedGrid.vector, aIManager.jumpPower, aIManager.numJumps, aIManager.moveDuration).OnComplete(() =>
         {
-
             colorManager.SetParticleColor(selectedGrid);
             SoundManager.PlaySound(GameAssets.SoundType.hit);
             InputManager.touchCheck = false;
@@ -223,24 +234,21 @@ public class GameManager : MonoBehaviour
     {
         foreach (GridCell pair in GridManager.Instance.gridDictionary.Values)
         {
-            if (pair.isEmpty == true)
+            if (pair != null && pair.isEmpty == true)
             {
-                //pair.EnableRb(true, Random.Range(0f,1f));
-                pair.transform.DOMoveY(-5, 1).SetDelay(Random.Range(0f,1f)).SetEase(Ease.InExpo).OnComplete(()=> pair.gameObject.SetActive(false));
+                pair.transform.DOMoveY(-5, 1).SetDelay(Random.Range(0f, 1f)).SetEase(Ease.InExpo).OnComplete(() => pair.gameObject.SetActive(false));
             }
         }
         foreach (Pawn pawn in botPawns)
         {
-            if (pawn.targetGrid.isEmpty == true)
+            if (pawn != null && pawn.targetGrid.isEmpty == true)
             {
-                //pawn.GetComponentInChildren<Animator>().SetBool("isSucsess", true);
+                pawn.transform.DOMoveY(-5, 1).SetDelay(Random.Range(0f, 1f)).SetEase(Ease.InExpo).OnComplete(() => DestroyFailPawns());
             }
         }
-        Invoke(nameof(DestroyFailPawns), 1f);
-        //Invoke(nameof(SetPawnsPosition), 2f);
-        Invoke(nameof(Fall2AnimStart), 3f);
-
-       // Fall2AnimStart();
+        CheckLevelComplate();
+        Invoke(nameof(SetPawnsPosition), 2f);
+        Invoke(nameof(ReloadGrids), 2f);
 
     }
     void Fall2AnimStart()
@@ -248,14 +256,14 @@ public class GameManager : MonoBehaviour
         foreach (GridCell pair in GridManager.Instance.gridDictionary.Values)
         {
             if (pair.isEmpty == true)
-            {   
-                pair.transform.position = new Vector3(pair.transform.position.x,Camera.main.transform.position.y+5, pair.transform.position.z);
+            {
+                pair.transform.position = new Vector3(pair.transform.position.x, Camera.main.transform.position.y + 5, pair.transform.position.z);
                 pair.gameObject.SetActive(true);
-                pair.transform.DOMove(pair.vector, 1.5f).SetDelay(Random.Range(0f, 1f)).SetEase(Ease.InOutExpo).OnComplete(()=> pair.transform.position = pair.vector);
+                pair.transform.DOMove(pair.vector, 1.5f).SetDelay(Random.Range(0f, 1f)).SetEase(Ease.InOutExpo).OnComplete(() => pair.transform.position = pair.vector);
 
             }
         }
-        Initialize();
+
     }
     public void FindSucsesPawns()
     {
@@ -282,15 +290,15 @@ public class GameManager : MonoBehaviour
 
         }
         FallAnimStart();
-        Invoke(nameof(GetEmptyGrids), 3f);
     }
     void DestroyFailPawns()
     {
         List<Pawn> pawnsToDestroy = new List<Pawn>(botPawns);
         foreach (Pawn pawn in pawnsToDestroy)
         {
-            if (pawn.targetGrid.isEmpty == true)
+            if (pawn.targetGrid.isEmpty == true && pawn != null && pawn.targetGrid != null)
             {
+                aIManager.pawns.Remove(pawn.botPawns);
                 botPawns.Remove(pawn);
                 Destroy(pawn.gameObject);
             }
@@ -300,39 +308,31 @@ public class GameManager : MonoBehaviour
     {
         foreach (Pawn pawn in botPawns)
         {
-            pawn.GetComponent<Transform>().position = pawn.position;
+            if (pawn != null)
+            {
+                pawn.position.z += moveDistance;
+                pawn.transform.position = pawn.position;
+            }
         }
-    }
-    void GetEmptyGrids()
-    {
-        foreach (GridCell cell in GridManager.Instance.gridDictionary.Values)
-        {            
-            cell.isEmpty = true;
-        }
-        InputManager.touchCheck = true;
+
     }
     void CheckLevelComplate()
     {
-        bool playerExists = false;
+        bool playerExists = botPawns.Any(pawn => pawn.pawnType == Pawn.PawnType.player);
 
-        foreach (Pawn pawn in botPawns)
+        if (!playerExists && !levelFailedSoundPlayed)
         {
-            if (pawn != null && pawn.pawnType == Pawn.PawnType.player)
-            {
-                playerExists = true;
-                if (botPawns.Count == 1 && !levelCompleteSoundPlayed)
-                {
-                    SoundManager.PlaySound(GameAssets.SoundType.success);
-                    LevelManager.Instance.LoadNextLevel();
-                    levelCompleteSoundPlayed = true;
-                }
-            }
-            if (!playerExists && !levelFailedSoundPlayed)
-            {
-                SoundManager.PlaySound(GameAssets.SoundType.fail);
-                LevelManager.Instance.ReloadLevel();
-                levelFailedSoundPlayed = true;
-            }
+            SoundManager.PlaySound(GameAssets.SoundType.fail);
+            LevelManager.Instance.ReloadLevel();
+            levelFailedSoundPlayed = true;
+            return;
+        }
+
+        if (playerExists && botPawns.Count == 1 && !levelCompleteSoundPlayed)
+        {
+            SoundManager.PlaySound(GameAssets.SoundType.success);
+            LevelManager.Instance.LoadNextLevel();
+            levelCompleteSoundPlayed = true;
         }
     }
 }
