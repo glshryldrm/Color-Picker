@@ -32,6 +32,11 @@ public class GameManager : MonoBehaviour
         QualitySettings.vSyncCount = 0;
         Application.targetFrameRate = 60;
     }
+    private void Update()
+    {
+        //CheckLevelComplate();
+        UpdateBotPawnsList();
+    }
     void ReloadGrids()
     {
         Transform camTransform = Camera.main.transform;
@@ -243,13 +248,16 @@ public class GameManager : MonoBehaviour
         {
             if (pawn != null && pawn.targetGrid.isEmpty == true)
             {
-                pawn.transform.DOMoveY(-5, 1).SetDelay(Random.Range(0f, 1f)).SetEase(Ease.InExpo).OnComplete(() => DestroyFailPawns());
+                pawn.transform.DOMoveY(-5, 1).SetDelay(Random.Range(0f, 1f)).SetEase(Ease.InExpo).OnComplete(() =>
+                {
+                    pawn.gameObject.SetActive(false);
+                });
             }
         }
-        CheckLevelComplate();
-        Invoke(nameof(SetPawnsPosition), 2f);
-        Invoke(nameof(ReloadGrids), 2f);
-
+        Invoke(nameof(DestroyFailPawns), 1f);
+        Invoke(nameof(CheckLevelComplate), 1f);
+        Invoke(nameof(SetPawnsPosition), 2.4f);
+        Invoke(nameof(ReloadGrids), 2.5f);
     }
     void Fall2AnimStart()
     {
@@ -271,7 +279,7 @@ public class GameManager : MonoBehaviour
         {
             if (pawn.pawnType == Pawn.PawnType.player)
             {
-                if (playerPawn.GetComponent<Pawn>().similarity < aIManager.levelDiffuculty)
+                if (pawn.similarity < aIManager.levelDiffuculty)
                 {
                     pawn.targetGrid.isEmpty = true;
                 }
@@ -318,7 +326,8 @@ public class GameManager : MonoBehaviour
     }
     void CheckLevelComplate()
     {
-        bool playerExists = botPawns.Any(pawn => pawn.pawnType == Pawn.PawnType.player);
+        botPawns.RemoveAll(pawn => pawn == null);
+        bool playerExists = botPawns.Exists(pawn => pawn.pawnType == Pawn.PawnType.player);
 
         if (!playerExists && !levelFailedSoundPlayed)
         {
@@ -333,6 +342,18 @@ public class GameManager : MonoBehaviour
             SoundManager.PlaySound(GameAssets.SoundType.success);
             LevelManager.Instance.LoadNextLevel();
             levelCompleteSoundPlayed = true;
+        }
+    }
+    void UpdateBotPawnsList()
+    {
+        List<Pawn> allPawns = botPawns.Where(pawn => pawn.pawnType == Pawn.PawnType.bot || pawn.pawnType == Pawn.PawnType.player).ToList();
+        botPawns.Clear();
+        foreach (var pawn in allPawns)
+        {
+            if (pawn.pawnType == Pawn.PawnType.bot || pawn.pawnType == Pawn.PawnType.player)
+            {
+                botPawns.Add(pawn);
+            }
         }
     }
 }

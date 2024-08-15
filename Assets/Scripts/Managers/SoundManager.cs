@@ -9,6 +9,7 @@ public static class SoundManager
         GameObject soundGameObject = new GameObject("Sound");
         AudioSource audioSource = soundGameObject.AddComponent<AudioSource>();
         audioSource.PlayOneShot(GetAudioClip(soundType));
+        GameObject.Destroy(soundGameObject, 3f);
 
     }
 
@@ -16,7 +17,7 @@ public static class SoundManager
     {
         foreach (Sound audio in GameAssets.Instance.sounds)
         {
-            if (audio.soundType == soundType && audio !=null)
+            if (audio.soundType == soundType && audio != null)
             {
                 return audio.audio;
             }
