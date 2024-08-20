@@ -89,10 +89,10 @@ public class GridManager : MonoBehaviour
 
     public void CreateHexGrid(float offset = 0)
     {
+        
         MeshRenderer meshRenderer = GameAssets.Instance.gridPrefab.GetComponentInChildren<MeshRenderer>();
         hexWidth = meshRenderer.bounds.size.x;
         hexHeight = meshRenderer.bounds.size.z;
-        
         moveOffset += offset;
         if (gridShape == GridShapes.hexGrid)
         {
@@ -102,19 +102,19 @@ public class GridManager : MonoBehaviour
             hexRadius = hexWidth / Mathf.Sqrt(3);
 
             gridDictionary = new Dictionary<Hex, GridCell>();
-            // Create the surrounding 
+            GameObject gridsObj = new GameObject("Grids");
             for (int q = -radius; q <= radius; q++)
             {
                 for (int r = Mathf.Max(-radius, -q - radius); r <= Mathf.Min(radius, -q + radius); r++)
                 {
                     Hex hexCoordinates = new Hex(q, r);
                     Vector3 position = HexToPosition(hexCoordinates);
-                    position.z += moveOffset;
+                    position = position + new Vector3(0, 0, moveOffset);
                     GameObject hex = Instantiate(GameAssets.Instance.gridPrefab, position, Quaternion.identity);
                     hex.GetComponent<GridCell>().Initialize(hexCoordinates);
                     hex.GetComponent<GridCell>().vector = position;
                     gridDictionary[hexCoordinates] = hex.GetComponent<GridCell>();
-                    hex.transform.parent = this.transform;
+                    hex.transform.parent = gridsObj.transform;
                 }
             }
         }
@@ -138,7 +138,7 @@ public class GridManager : MonoBehaviour
                     hex.GetComponent<GridCell>().Initialize(hexCoordinates);
                     hex.GetComponent<GridCell>().vector = position;
                     gridDictionary[hexCoordinates] = hex.GetComponent<GridCell>();
-                    hex.transform.parent = this.transform;
+                    hex.transform.parent = new GameObject("Grids").transform;
                 }
             }
         }

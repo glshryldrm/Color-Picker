@@ -36,7 +36,6 @@ public class SceneTransition : MonoBehaviour
         c_.a = 0;
 
         transitionImage.DOColor(c_, delayTime).OnComplete(() => transitionImage.gameObject.SetActive(false));
-        //DontDestroyOnLoad(transitionObj);
     }
 
     public void LoadScene(string sceneName)

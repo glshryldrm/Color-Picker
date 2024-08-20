@@ -39,17 +39,18 @@ public class AIManager : MonoBehaviour
         if (pawn.botPawns.successCount > 0)
         {
             pawn.targetGrid = successTargets[Random.Range(0, successTargets.Count)];
-            pawn.similarity = gameManager.CalculateDistancePercentage(gameManager.targetGrid, pawn.targetGrid);
-            
             pawn.targetGrid.vector.y = 1.5f;
+            pawn.similarity = gameManager.CalculateDistancePercentage(gameManager.targetGrid, pawn.targetGrid);
+
             pawn.targetGrid.isEmpty = false;
+
         }
         else
         {
             pawn.targetGrid = failTargets[Random.Range(0, failTargets.Count)];
-            pawn.similarity = gameManager.CalculateDistancePercentage(gameManager.targetGrid, pawn.targetGrid);
-            
             pawn.targetGrid.vector.y = 1.5f;
+            pawn.similarity = gameManager.CalculateDistancePercentage(gameManager.targetGrid, pawn.targetGrid);
+
             pawn.targetGrid.isEmpty = false;
         }
     }
@@ -58,7 +59,7 @@ public class AIManager : MonoBehaviour
         foreach (GridCell cell in GridManager.Instance.gridDictionary.Values)
         {
             float similarity = gameManager.CalculateDistancePercentage(gameManager.targetGrid, cell);
-           
+
             gridCellsSimilaritys.Add(new KeyValuePair<float, GridCell>(similarity, cell));
         }
     }

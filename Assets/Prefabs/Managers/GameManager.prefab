@@ -44,9 +44,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c045082e38b3bf34e9e5728f0555d2f8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gridManager: {fileID: 0}
   colorManager: {fileID: 0}
   similarityText: {fileID: 0}
   targetGrid: {fileID: 0}
   aIManager: {fileID: 0}
   botPawns: []
+  camMoveSpeed: 2
+  moveDistance: 5

@@ -10,7 +10,7 @@ public class InputManager : MonoBehaviour
     public static bool touchCheck = true;
     void Start()
     {
-        cam = Camera.main;     
+        cam = Camera.main;
     }
     void Update()
     {
@@ -22,9 +22,9 @@ public class InputManager : MonoBehaviour
         if (touchCheck)
         {
             if (Input.touchCount > 0)
-            {              
-               Touch touch = Input.GetTouch(0);
-              
+            {
+                Touch touch = Input.GetTouch(0);
+
                 if (touch.phase == TouchPhase.Began)
                 {
                     Ray ray = cam.ScreenPointToRay(touch.position);
@@ -36,8 +36,7 @@ public class InputManager : MonoBehaviour
                         {
                             gameManager.PlacePlayerPawn(hit.collider.GetComponentInParent<GridCell>());
                             gameManager.CalculateDistancePercentage(gameManager.targetGrid, hit.collider.GetComponentInParent<GridCell>());
-                           
-                            
+
                             touch.phase = TouchPhase.Ended;
                         }
                     }

@@ -17,7 +17,7 @@ public class GameManager : MonoBehaviour
     bool levelCompleteSoundPlayed = false;
     bool levelFailedSoundPlayed = false;
     public float camMoveSpeed = 2f;
-    public float moveDistance = 15f;
+    float moveDistance = 0f;
 
     private void Start()
     {
@@ -35,15 +35,20 @@ public class GameManager : MonoBehaviour
     private void Update()
     {
         //CheckLevelComplate();
-        UpdateBotPawnsList();
     }
     void ReloadGrids()
     {
+        foreach (GridCell cell in GridManager.Instance.gridDictionary.Values)
+        {
+            if (cell.gameObject.activeSelf)
+                cell.GetComponentInChildren<Collider>().enabled = false;
+        }
+        float moveDistance = GridManager.Instance.radius * 1.5f;
         Transform camTransform = Camera.main.transform;
         Vector3 forwardPosition = Camera.main.transform.position + new Vector3(0, 0, moveDistance);
         Camera.main.transform.DOMove(forwardPosition, camMoveSpeed).OnComplete(() =>
         {
-            GridManager.Instance.CreateHexGrid(moveDistance);
+            GridManager.Instance.CreateHexGrid(moveDistance + GridManager.Instance.radius * .5f);
             FindGridsColor();
             Initialize();
             Fall2AnimStart();
@@ -251,12 +256,11 @@ public class GameManager : MonoBehaviour
                 pawn.transform.DOMoveY(-5, 1).SetDelay(Random.Range(0f, 1f)).SetEase(Ease.InExpo).OnComplete(() =>
                 {
                     pawn.gameObject.SetActive(false);
+                    CheckLevelComplate();
+                    DestroyFailPawns();
                 });
             }
         }
-        Invoke(nameof(DestroyFailPawns), 1f);
-        Invoke(nameof(CheckLevelComplate), 1f);
-        Invoke(nameof(SetPawnsPosition), 2.4f);
         Invoke(nameof(ReloadGrids), 2.5f);
     }
     void Fall2AnimStart()
@@ -304,7 +308,7 @@ public class GameManager : MonoBehaviour
         List<Pawn> pawnsToDestroy = new List<Pawn>(botPawns);
         foreach (Pawn pawn in pawnsToDestroy)
         {
-            if (pawn.targetGrid.isEmpty == true && pawn != null && pawn.targetGrid != null)
+            if (pawn.gameObject.activeSelf == false)
             {
                 aIManager.pawns.Remove(pawn.botPawns);
                 botPawns.Remove(pawn);
@@ -327,7 +331,7 @@ public class GameManager : MonoBehaviour
     void CheckLevelComplate()
     {
         botPawns.RemoveAll(pawn => pawn == null);
-        bool playerExists = botPawns.Exists(pawn => pawn.pawnType == Pawn.PawnType.player);
+        bool playerExists = botPawns.Exists(pawn => pawn.pawnType == Pawn.PawnType.player && pawn.gameObject.activeSelf == true);
 
         if (!playerExists && !levelFailedSoundPlayed)
         {
@@ -337,23 +341,11 @@ public class GameManager : MonoBehaviour
             return;
         }
 
-        if (playerExists && botPawns.Count == 1 && !levelCompleteSoundPlayed)
+        if (playerExists && botPawns.Exists(pawn => pawn.gameObject.activeSelf).CompareTo(false) == botPawns.Count - 1 && !levelCompleteSoundPlayed)
         {
             SoundManager.PlaySound(GameAssets.SoundType.success);
             LevelManager.Instance.LoadNextLevel();
             levelCompleteSoundPlayed = true;
-        }
-    }
-    void UpdateBotPawnsList()
-    {
-        List<Pawn> allPawns = botPawns.Where(pawn => pawn.pawnType == Pawn.PawnType.bot || pawn.pawnType == Pawn.PawnType.player).ToList();
-        botPawns.Clear();
-        foreach (var pawn in allPawns)
-        {
-            if (pawn.pawnType == Pawn.PawnType.bot || pawn.pawnType == Pawn.PawnType.player)
-            {
-                botPawns.Add(pawn);
-            }
         }
     }
 }
