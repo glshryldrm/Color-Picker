@@ -12,7 +12,6 @@ public class GridManager : MonoBehaviour
     [HideInInspector] public float hexWidth;
     [HideInInspector] public float hexHeight;
     public GameObject gizmosPrefab;
-    float moveOffset = 0f;
     public enum GridShapes
     {
         hexGrid,
@@ -87,13 +86,12 @@ public class GridManager : MonoBehaviour
 
     }
 
-    public void CreateHexGrid(float offset = 0)
+    public void CreateHexGrid()
     {
         
         MeshRenderer meshRenderer = GameAssets.Instance.gridPrefab.GetComponentInChildren<MeshRenderer>();
         hexWidth = meshRenderer.bounds.size.x;
         hexHeight = meshRenderer.bounds.size.z;
-        moveOffset += offset;
         if (gridShape == GridShapes.hexGrid)
         {
             if (GameAssets.Instance == null || GameAssets.Instance.gridPrefab == null) return;
@@ -109,7 +107,6 @@ public class GridManager : MonoBehaviour
                 {
                     Hex hexCoordinates = new Hex(q, r);
                     Vector3 position = HexToPosition(hexCoordinates);
-                    position = position + new Vector3(0, 0, moveOffset);
                     GameObject hex = Instantiate(GameAssets.Instance.gridPrefab, position, Quaternion.identity);
                     hex.GetComponent<GridCell>().Initialize(hexCoordinates);
                     hex.GetComponent<GridCell>().vector = position;
@@ -133,7 +130,6 @@ public class GridManager : MonoBehaviour
                     Vector3 position = HexToPosition(hexCoordinates, hexWidth, hexHeight);
                     position.x -= offsetX; // X ekseninde ortala
                     position.z -= offsetZ; // Z ekseninde ortala
-                    position.z += moveOffset;
                     GameObject hex = Instantiate(GameAssets.Instance.gridPrefab, position, Quaternion.identity);
                     hex.GetComponent<GridCell>().Initialize(hexCoordinates);
                     hex.GetComponent<GridCell>().vector = position;

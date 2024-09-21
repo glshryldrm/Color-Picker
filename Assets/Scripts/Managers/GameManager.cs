@@ -5,11 +5,15 @@ using TMPro;
 using DG.Tweening;
 using System.Linq;
 using Scrtwpns.Mixbox;
+using UnityEngine.UI;
+
 public class GameManager : MonoBehaviour
 {
     [SerializeField] ColorManager colorManager;
     GameObject playerPawn;
     [SerializeField] TextMeshProUGUI similarityText;
+    [SerializeField] TextMeshProUGUI countdownText;
+    [SerializeField] GameObject panel;
     Hex targetHex;
     [HideInInspector] public GridCell targetGrid;
     public AIManager aIManager;
@@ -21,7 +25,6 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
-
         Initialize();
         PlacePawnsAroundHexGrid();
     }
@@ -31,31 +34,7 @@ public class GameManager : MonoBehaviour
         FindGridsColor();
         QualitySettings.vSyncCount = 0;
         Application.targetFrameRate = 60;
-    }
-    private void Update()
-    {
-        //CheckLevelComplate();
-    }
-    void ReloadGrids()
-    {
-        foreach (GridCell cell in GridManager.Instance.gridDictionary.Values)
-        {
-            if (cell.gameObject.activeSelf)
-                cell.GetComponentInChildren<Collider>().enabled = false;
-        }
-        float moveDistance = GridManager.Instance.radius * 1.5f;
-        Transform camTransform = Camera.main.transform;
-        Vector3 forwardPosition = Camera.main.transform.position + new Vector3(0, 0, moveDistance);
-        Camera.main.transform.DOMove(forwardPosition, camMoveSpeed).OnComplete(() =>
-        {
-            GridManager.Instance.CreateHexGrid(moveDistance + GridManager.Instance.radius * .5f);
-            FindGridsColor();
-            Initialize();
-            Fall2AnimStart();
-
-        });
-
-    }
+    }    
     void Initialize()
     {
 
@@ -63,6 +42,24 @@ public class GameManager : MonoBehaviour
         StartCoroutine(ShowTargetGrid());
 
     }
+    void ReloadGrids()
+    {
+        foreach (GridCell cell in GridManager.Instance.gridDictionary.Values)
+        {
+            if (!cell.gameObject.activeSelf)
+            {
+                cell.GetComponentInChildren<Collider>().enabled = true;
+                FindGridsColor();
+                Initialize();
+                Fall2AnimStart();
+            }
+                
+
+        }
+        
+
+    }
+
     void PlacePawnsAroundHexGrid()
     {
         if (GridManager.Instance.gridDictionary == null || GridManager.Instance.gridDictionary.Count == 0) return;
@@ -227,20 +224,38 @@ public class GameManager : MonoBehaviour
     }
     private IEnumerator ShowTargetGrid()
     {
+        SetPawnsPosition();
+        Image pi = panel.GetComponent<Image>();
+        pi.color = Color.white;
+        panel.SetActive(true);
+
         yield return new WaitForSeconds(2f);
-        foreach (KeyValuePair<Hex, GridCell> pair in GridManager.Instance.gridDictionary)
-        {
-            pair.Value.SetColor(targetGrid.color);
-        }
+        StartCoroutine(StartCountdown());
+        targetGrid.color.a = 1f;
+        pi.color = targetGrid.color;
+
         yield return new WaitForSeconds(3f);
-        foreach (KeyValuePair<Hex, GridCell> pair in GridManager.Instance.gridDictionary)
-        {
-            pair.Value.SetColor(Color.white);
-        }
-        yield return new WaitForSeconds(1f);
+        panel.SetActive(false);
         SetGridsColor();
     }
-    void FallAnimStart()
+    IEnumerator StartCountdown()
+    {
+        int currentTime = 3;
+        countdownText.gameObject.SetActive(true);
+        while (currentTime >= 0)
+        {
+            // UI Text'i güncelle
+            countdownText.text = currentTime.ToString();
+
+            // 1 saniye bekle
+            yield return new WaitForSeconds(1f);
+
+            // Zamaný bir azalt
+            currentTime--;
+        }
+        countdownText.gameObject.SetActive(false);
+    }
+        void FallAnimStart()
     {
         foreach (GridCell pair in GridManager.Instance.gridDictionary.Values)
         {
