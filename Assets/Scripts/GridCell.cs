@@ -11,7 +11,7 @@ public class GridCell : MonoBehaviour
     private MeshRenderer meshRenderer;
     [HideInInspector] public Hex hexCoordinates;
     public bool isEmpty = true;
-
+    public int Score;
     Rigidbody rb;
 
     private void Awake()

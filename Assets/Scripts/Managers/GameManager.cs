@@ -25,13 +25,14 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
+        //GridManager.Instance.CreateGridOnStart();
+        FindGridsColor();
         Initialize();
         PlacePawnsAroundHexGrid();
     }
     private void Awake()
     {
-        GridManager.Instance.CreateHexGrid();
-        FindGridsColor();
+        
         QualitySettings.vSyncCount = 0;
         Application.targetFrameRate = 60;
     }    
@@ -159,7 +160,7 @@ public class GameManager : MonoBehaviour
     void ChooseRandomTargetGrid()
     {
         int random = Random.Range(0, GridManager.Instance.gridDictionary.Count);
-        targetHex = GridManager.Instance.gridDictionary.Keys.ElementAt(random);
+        targetHex = GridManager.Instance.gridDictionary.ElementAt(random).Key;
     }
     public void PlacePlayerPawn(GridCell selectedGrid)
     {

@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+[ExecuteAlways]
 public class GridManager : MonoBehaviour
 {
     public static GridManager Instance;
@@ -19,12 +19,20 @@ public class GridManager : MonoBehaviour
     }
 
     public GridShapes gridShape;
-    public Dictionary<Hex, GridCell> gridDictionary;
+    public Dictionary<Hex, GridCell> gridDictionary = new();
 
     private void Awake()
     {
         Instance = this;
     }
+    public void CreateGridOnStart()
+    {
+        if (gridDictionary == null || gridDictionary.Count == 0) // Eğer gridler henüz oluşturulmamışsa
+        {
+            CreateHexGrid(); // Burada gridleri oluştur
+        }
+    }
+
     private void OnDrawGizmos()
     {
         MeshRenderer meshRenderer = gizmosPrefab.GetComponentInChildren<MeshRenderer>();
@@ -88,7 +96,7 @@ public class GridManager : MonoBehaviour
 
     public void CreateHexGrid()
     {
-        
+
         MeshRenderer meshRenderer = GameAssets.Instance.gridPrefab.GetComponentInChildren<MeshRenderer>();
         hexWidth = meshRenderer.bounds.size.x;
         hexHeight = meshRenderer.bounds.size.z;
@@ -99,7 +107,6 @@ public class GridManager : MonoBehaviour
             // Calculate radius
             hexRadius = hexWidth / Mathf.Sqrt(3);
 
-            gridDictionary = new Dictionary<Hex, GridCell>();
             GameObject gridsObj = new GameObject("Grids");
             for (int q = -radius; q <= radius; q++)
             {
@@ -121,7 +128,6 @@ public class GridManager : MonoBehaviour
             float offsetX = (width - 1) * hexWidth * 0.75f * 0.5f;
             float offsetZ = (height - 1) * hexHeight * 0.5f;
 
-            gridDictionary = new Dictionary<Hex, GridCell>();
             for (int x = 0; x < width; x++)
             {
                 for (int z = 0; z < height; z++)
