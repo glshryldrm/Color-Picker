@@ -25,14 +25,13 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
-        //GridManager.Instance.CreateGridOnStart();
+        GridManager.Instance.ListToDictionary();
         FindGridsColor();
         Initialize();
         PlacePawnsAroundHexGrid();
     }
     private void Awake()
     {
-        
         QualitySettings.vSyncCount = 0;
         Application.targetFrameRate = 60;
     }    

@@ -19,20 +19,31 @@ public class GridManager : MonoBehaviour
     }
 
     public GridShapes gridShape;
-    public Dictionary<Hex, GridCell> gridDictionary = new();
-
+    [SerializeField] public Dictionary<Hex, GridCell> gridDictionary = new Dictionary<Hex, GridCell>();
+    [SerializeField] List<Hex> gridHexs = new List<Hex>();
+    [SerializeField] List<GridCell> gridCells = new List<GridCell>();
+    private void OnEnable()
+    {
+        if (!Application.isPlaying) // Editör modundayken çalıştırmak için
+        {
+            if (gridHexs.Count > 0 && gridCells.Count > 0 && gridDictionary.Count == 0)
+            {
+                ListToDictionary(); // Editörde grid verilerini tekrar yüklemek için
+            }
+        }
+    }
     private void Awake()
     {
         Instance = this;
     }
-    public void CreateGridOnStart()
+    public void ListToDictionary()
     {
-        if (gridDictionary == null || gridDictionary.Count == 0) // Eğer gridler henüz oluşturulmamışsa
+        gridDictionary = new Dictionary<Hex, GridCell>();
+        for (int i = 0; i < gridCells.Count; i++)
         {
-            CreateHexGrid(); // Burada gridleri oluştur
+            gridDictionary.Add(gridHexs[i], gridCells[i]);
         }
     }
-
     private void OnDrawGizmos()
     {
         MeshRenderer meshRenderer = gizmosPrefab.GetComponentInChildren<MeshRenderer>();
@@ -96,7 +107,11 @@ public class GridManager : MonoBehaviour
 
     public void CreateHexGrid()
     {
-
+        if (gridHexs.Count > 0 && gridCells.Count > 0)
+        {
+            Debug.Log("Grid zaten oluşturulmuş, yeniden oluşturulmayacak.");
+            return;
+        }
         MeshRenderer meshRenderer = GameAssets.Instance.gridPrefab.GetComponentInChildren<MeshRenderer>();
         hexWidth = meshRenderer.bounds.size.x;
         hexHeight = meshRenderer.bounds.size.z;
@@ -113,11 +128,17 @@ public class GridManager : MonoBehaviour
                 for (int r = Mathf.Max(-radius, -q - radius); r <= Mathf.Min(radius, -q + radius); r++)
                 {
                     Hex hexCoordinates = new Hex(q, r);
+                    if (gridHexs.Contains(hexCoordinates))
+                    {
+                        continue;
+                    }
                     Vector3 position = HexToPosition(hexCoordinates);
                     GameObject hex = Instantiate(GameAssets.Instance.gridPrefab, position, Quaternion.identity);
                     hex.GetComponent<GridCell>().Initialize(hexCoordinates);
                     hex.GetComponent<GridCell>().vector = position;
                     gridDictionary[hexCoordinates] = hex.GetComponent<GridCell>();
+                    gridHexs.Add(hexCoordinates);
+                    gridCells.Add(hex.GetComponent<GridCell>());
                     hex.transform.parent = gridsObj.transform;
                 }
             }
