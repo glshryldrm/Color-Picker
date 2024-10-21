@@ -5,7 +5,7 @@ using UnityEngine;
 [System.Serializable]
 public class Pawn : MonoBehaviour
 {
-    public enum PawnType { player, bot}
+    public enum PawnType { player, bot }
     public Vector3 position;
     public Color color;
     public PawnType pawnType;
@@ -13,4 +13,5 @@ public class Pawn : MonoBehaviour
     public bool isSuccess = true;
     public float similarity;
     public BotPawns botPawns;
+    public int totalScore = 0;
 }

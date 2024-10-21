@@ -134,6 +134,9 @@ public class GridManager : MonoBehaviour
                     }
                     Vector3 position = HexToPosition(hexCoordinates);
                     GameObject hex = Instantiate(GameAssets.Instance.gridPrefab, position, Quaternion.identity);
+#if UNITY_EDITOR
+                    UnityEditor.EditorUtility.SetDirty(this); // GridManager ya da ilgili script üzerinde değişiklikleri kaydet
+#endif
                     hex.GetComponent<GridCell>().Initialize(hexCoordinates);
                     hex.GetComponent<GridCell>().vector = position;
                     gridDictionary[hexCoordinates] = hex.GetComponent<GridCell>();

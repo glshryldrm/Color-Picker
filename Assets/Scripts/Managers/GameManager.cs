@@ -29,6 +29,7 @@ public class GameManager : MonoBehaviour
         FindGridsColor();
         Initialize();
         PlacePawnsAroundHexGrid();
+        ScoreManager.Instance.FindScoredGrids();
     }
     private void Awake()
     {
@@ -145,7 +146,7 @@ public class GameManager : MonoBehaviour
     }
     void FindTargetGridColor()
     {
-        ChooseRandomTargetGrid();
+        ChooseTargetGrid();
         foreach (KeyValuePair<Hex, GridCell> pair in GridManager.Instance.gridDictionary)
         {
             if (pair.Key.Equals(targetHex))
@@ -156,10 +157,10 @@ public class GameManager : MonoBehaviour
         }
 
     }
-    void ChooseRandomTargetGrid()
+    void ChooseTargetGrid()
     {
-        int random = Random.Range(0, GridManager.Instance.gridDictionary.Count);
-        targetHex = GridManager.Instance.gridDictionary.ElementAt(random).Key;
+        GridCell highestScoreCell = GridManager.Instance.gridDictionary.Values.OrderByDescending(cell => cell.Score).FirstOrDefault();
+        targetHex = GridManager.Instance.gridDictionary.FirstOrDefault(x => x.Value == highestScoreCell).Key;
     }
     public void PlacePlayerPawn(GridCell selectedGrid)
     {
