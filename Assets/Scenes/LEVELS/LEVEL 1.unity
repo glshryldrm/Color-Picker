@@ -49396,6 +49396,18 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1606272636}
   m_Mesh: {fileID: 532591105809680800, guid: 5072049535d04a24db08f5cd33f44a11, type: 3}
+--- !u!114 &1606876089 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 7054352423287101007, guid: 4d5634937ea108941bcdc7aab3cde8b4,
+    type: 3}
+  m_PrefabInstance: {fileID: 4781550305093267294}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1608021948
 GameObject:
   m_ObjectHideFlags: 0
@@ -65646,6 +65658,11 @@ PrefabInstance:
       propertyPath: panel
       value: 
       objectReference: {fileID: 1748483369}
+    - target: {fileID: 5677141874874303541, guid: b5baa2cf1b4a99c47a2d8d83e4cd92e5,
+        type: 3}
+      propertyPath: stageText
+      value: 
+      objectReference: {fileID: 1606876089}
     - target: {fileID: 5677141874874303541, guid: b5baa2cf1b4a99c47a2d8d83e4cd92e5,
         type: 3}
       propertyPath: countdownText

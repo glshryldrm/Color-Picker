@@ -13,6 +13,7 @@ public class GameManager : MonoBehaviour
     GameObject playerPawn;
     [SerializeField] TextMeshProUGUI similarityText;
     [SerializeField] TextMeshProUGUI countdownText;
+    [SerializeField] TextMeshProUGUI stageText;
     [SerializeField] GameObject panel;
     Hex targetHex;
     [HideInInspector] public GridCell targetGrid;
@@ -21,7 +22,8 @@ public class GameManager : MonoBehaviour
     bool levelCompleteSoundPlayed = false;
     bool levelFailedSoundPlayed = false;
     public float camMoveSpeed = 2f;
-    float moveDistance = 0f;
+    public int stageCount = 1;
+    static int currentStage = 1;
 
     private void Start()
     {
@@ -33,12 +35,12 @@ public class GameManager : MonoBehaviour
     }
     private void Awake()
     {
+        FindStageCount();
         QualitySettings.vSyncCount = 0;
         Application.targetFrameRate = 60;
-    }    
+    }
     void Initialize()
     {
-
         FindTargetGridColor();
         StartCoroutine(ShowTargetGrid());
 
@@ -54,10 +56,10 @@ public class GameManager : MonoBehaviour
                 Initialize();
                 Fall2AnimStart();
             }
-                
+
 
         }
-        
+
 
     }
 
@@ -201,30 +203,13 @@ public class GameManager : MonoBehaviour
         similarity = Mathf.Ceil(similarity);
         return similarity;
     }
-    public float CalculateColorSimilarty(GridCell targetGrid, GridCell selectedGrid)
-    {
-        // Hedef rengi latent uzaya dönüþtür
-        MixboxLatent target = Mixbox.RGBToLatent(targetGrid.color);
-
-        // Karþýlaþtýrýlan rengi latent uzaya dönüþtür ve hedefle arasýndaki farký hesapla
-        MixboxLatent diff = target - Mixbox.RGBToLatent(selectedGrid.color);
-
-        // Farkýn her bir bileþeni için mutlak deðerini al ve ortalamasýný hesapla
-        float d = (Mathf.Abs(diff.c0) + Mathf.Abs(diff.c1) + Mathf.Abs(diff.c2) + Mathf.Abs(diff.c3)) / 4f;
-
-        // Benzerlik yüzdesini hesapla (100 - ortalama fark)
-        float similarPercent = 100 - (d * 100f);
-
-        // Eðer bu benzerlik yüzdesi mevcut maksimumdan büyükse, maxRate'i güncelle
-        return similarPercent;
-
-    }
     void PrintPlayerSimilarty()
     {
         similarityText.text = "Similarity = %" + playerPawn.GetComponent<Pawn>().similarity.ToString();
     }
     private IEnumerator ShowTargetGrid()
     {
+        CheckStageState();
         SetPawnsPosition();
         Image pi = panel.GetComponent<Image>();
         pi.color = Color.white;
@@ -256,7 +241,7 @@ public class GameManager : MonoBehaviour
         }
         countdownText.gameObject.SetActive(false);
     }
-        void FallAnimStart()
+    void FallAnimStart()
     {
         foreach (GridCell pair in GridManager.Instance.gridDictionary.Values)
         {
@@ -338,11 +323,23 @@ public class GameManager : MonoBehaviour
         {
             if (pawn != null)
             {
-                pawn.position.z += moveDistance;
                 pawn.transform.position = pawn.position;
             }
         }
-
+    }
+    void FindStageCount()
+    {
+        BotPawns bp = aIManager.pawns.OrderByDescending(cell => cell.successCount).FirstOrDefault();
+        stageCount = bp.successCount + 1;
+    }
+    void CheckStageState()
+    {
+        
+        stageText.text = "Stage " + currentStage.ToString();
+        if (currentStage != stageCount)
+        {
+            currentStage += 1;
+        }
     }
     void CheckLevelComplate()
     {
