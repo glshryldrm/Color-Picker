@@ -13,6 +13,7 @@ Library: C:\Users\glshr\OneDrive\Belgeler\unity\Color-Picker\Temp\BurstOutput\te
 --assembly-defines=Assembly-CSharp-firstpass;
 --assembly-defines=Assembly-CSharp;
 --assembly-defines=Unity.RenderPipelines.Core.Runtime;
+--assembly-defines=Unity.VectorGraphics;
 --assembly-defines=Unity.Analytics.DataPrivacy;
 --assembly-defines=Unity.Services.Core.Environments.Internal;
 --assembly-defines=Unity.Services.Core;
@@ -40,6 +41,7 @@ Library: C:\Users\glshr\OneDrive\Belgeler\unity\Color-Picker\Temp\BurstOutput\te
 --assembly-defines=Unity.RenderPipeline.Universal.ShaderLibrary;
 --assembly-defines=Unity.Timeline;
 --assembly-defines=Unity.Services.Analytics;
+--assembly-defines=Unity.InternalAPIEngineBridge.003;
 --assembly-defines=Unity.Mathematics;
 --assembly-defines=Unity.RenderPipelines.Universal.Shaders;
 --assembly-defines=Unity.Services.Core.Registration;
@@ -91,6 +93,7 @@ Library: C:\Users\glshr\OneDrive\Belgeler\unity\Color-Picker\Temp\BurstOutput\te
 --assembly-defines=Assembly-CSharp-firstpass;
 --assembly-defines=Assembly-CSharp;
 --assembly-defines=Unity.RenderPipelines.Core.Runtime;
+--assembly-defines=Unity.VectorGraphics;
 --assembly-defines=Unity.Analytics.DataPrivacy;
 --assembly-defines=Unity.Services.Core.Environments.Internal;
 --assembly-defines=Unity.Services.Core;
@@ -118,6 +121,7 @@ Library: C:\Users\glshr\OneDrive\Belgeler\unity\Color-Picker\Temp\BurstOutput\te
 --assembly-defines=Unity.RenderPipeline.Universal.ShaderLibrary;
 --assembly-defines=Unity.Timeline;
 --assembly-defines=Unity.Services.Analytics;
+--assembly-defines=Unity.InternalAPIEngineBridge.003;
 --assembly-defines=Unity.Mathematics;
 --assembly-defines=Unity.RenderPipelines.Universal.Shaders;
 --assembly-defines=Unity.Services.Core.Registration;

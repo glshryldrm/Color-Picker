@@ -20,7 +20,6 @@ public class GameManager : MonoBehaviour
     public AIManager aIManager;
     public List<Pawn> botPawns;
     bool levelCompleteSoundPlayed = false;
-    bool levelFailedSoundPlayed = false;
     public float camMoveSpeed = 2f;
     public int stageCount = 1;
     static int currentStage = 1;
@@ -28,10 +27,9 @@ public class GameManager : MonoBehaviour
     private void Start()
     {
         GridManager.Instance.ListToDictionary();
-        FindGridsColor();
         Initialize();
+        FindGridsColor();
         PlacePawnsAroundHexGrid();
-        ScoreManager.Instance.FindScoredGrids();
     }
     private void Awake()
     {
@@ -52,15 +50,11 @@ public class GameManager : MonoBehaviour
             if (!cell.gameObject.activeSelf)
             {
                 cell.GetComponentInChildren<Collider>().enabled = true;
+                Fall2AnimStart();
                 FindGridsColor();
                 Initialize();
-                Fall2AnimStart();
             }
-
-
         }
-
-
     }
 
     void PlacePawnsAroundHexGrid()
@@ -161,17 +155,49 @@ public class GameManager : MonoBehaviour
     }
     void ChooseTargetGrid()
     {
-        GridCell highestScoreCell = GridManager.Instance.gridDictionary.Values.OrderByDescending(cell => cell.Score).FirstOrDefault();
+        GridCell highestScoreCell = GridManager.Instance.stageTargetColors[currentStage - 1];
+        AssignScoresToNeighborsWithCollider(highestScoreCell);
         targetHex = GridManager.Instance.gridDictionary.FirstOrDefault(x => x.Value == highestScoreCell).Key;
     }
+    public void AssignScoresToNeighborsWithCollider(GridCell targetGrid)
+    {
+        foreach (var cell in GridManager.Instance.gridDictionary.Values)
+        {
+            cell.Score = 0;
+        }
+        // Hedef grid'in pozisyonunu al
+        Vector3 targetPosition = targetGrid.transform.position;
+
+        // Belirli bir yarýçap (örneðin 1.5f) içinde collider'larý ara
+        Collider[] hitColliders = Physics.OverlapSphere(targetPosition, 1f);
+
+        foreach (var hitCollider in hitColliders)
+        {
+            GridCell neighborGrid = hitCollider.GetComponentInParent<GridCell>();
+
+            if (neighborGrid != null && neighborGrid != targetGrid)
+            {
+                // Komþu gridlere puan ve renk ata
+                neighborGrid.Score = 2; // Örneðin, komþular 2 puan alýr
+                neighborGrid.SetColor(Color.yellow);
+            }
+        }
+
+        // Hedef grid'e puan ve renk ata
+        targetGrid.Score = 5;
+        targetGrid.SetColor(Color.red);
+        targetGrid.isTarget = true;
+    }
+
     public void PlacePlayerPawn(GridCell selectedGrid)
     {
-        selectedGrid.vector.y = 1.5f;
         InputManager.touchCheck = false;
         playerPawn.GetComponent<Pawn>().similarity = CalculateDistancePercentage(targetGrid, selectedGrid);
 
         playerPawn.GetComponent<Pawn>().targetGrid = selectedGrid;
-        playerPawn.transform.DOJump(selectedGrid.vector, aIManager.jumpPower, aIManager.numJumps, aIManager.moveDuration).OnComplete(() =>
+        Vector3 pawnTG = selectedGrid.vector;
+        pawnTG.y = 1.5f;
+        playerPawn.transform.DOJump(pawnTG, aIManager.jumpPower, aIManager.numJumps, aIManager.moveDuration).OnComplete(() =>
         {
             colorManager.SetParticleColor(selectedGrid);
             SoundManager.PlaySound(GameAssets.SoundType.hit);
@@ -258,11 +284,11 @@ public class GameManager : MonoBehaviour
                 {
                     pawn.gameObject.SetActive(false);
                     CheckLevelComplate();
-                    DestroyFailPawns();
+                    //DestroyFailPawns();
                 });
             }
         }
-        Invoke(nameof(ReloadGrids), 2.5f);
+        Invoke(nameof(ReloadGrids), 3f);
     }
     void Fall2AnimStart()
     {
@@ -270,13 +296,21 @@ public class GameManager : MonoBehaviour
         {
             if (pair.isEmpty == true)
             {
-                pair.transform.position = new Vector3(pair.transform.position.x, Camera.main.transform.position.y + 5, pair.transform.position.z);
+                pair.transform.position = new Vector3(pair.transform.position.x, 0, pair.transform.position.z);
                 pair.gameObject.SetActive(true);
                 pair.transform.DOMove(pair.vector, 1.5f).SetDelay(Random.Range(0f, 1f)).SetEase(Ease.InOutExpo).OnComplete(() => pair.transform.position = pair.vector);
 
             }
         }
-
+        ChangeGridsToEmpty();
+        ScoreManager.Instance.CalculatePawnsTotalScore();
+    }
+    void ChangeGridsToEmpty()
+    {
+        foreach (var cell in GridManager.Instance.gridDictionary.Values)
+        {
+            cell.isEmpty = true;
+        }
     }
     public void FindSucsesPawns()
     {
@@ -323,41 +357,43 @@ public class GameManager : MonoBehaviour
         {
             if (pawn != null)
             {
+                pawn.gameObject.SetActive(true);
                 pawn.transform.position = pawn.position;
             }
         }
     }
     void FindStageCount()
     {
-        BotPawns bp = aIManager.pawns.OrderByDescending(cell => cell.successCount).FirstOrDefault();
-        stageCount = bp.successCount + 1;
+        stageCount = GridManager.Instance.stageTargetColors.Count;
     }
     void CheckStageState()
     {
-        
+
         stageText.text = "Stage " + currentStage.ToString();
-        if (currentStage != stageCount)
-        {
-            currentStage += 1;
-        }
+
+        currentStage += 1;
+
     }
     void CheckLevelComplate()
     {
         botPawns.RemoveAll(pawn => pawn == null);
         bool playerExists = botPawns.Exists(pawn => pawn.pawnType == Pawn.PawnType.player && pawn.gameObject.activeSelf == true);
+        BotPawns bp = aIManager.pawns.OrderByDescending(cell => cell.successCount).FirstOrDefault();
 
-        if (!playerExists && !levelFailedSoundPlayed)
-        {
-            SoundManager.PlaySound(GameAssets.SoundType.fail);
-            LevelManager.Instance.ReloadLevel();
-            levelFailedSoundPlayed = true;
-            return;
-        }
+        //if (!playerExists && !levelFailedSoundPlayed)
+        //{
+        //    SoundManager.PlaySound(GameAssets.SoundType.fail);
+        //    LevelManager.Instance.ReloadLevel();
+        //    levelFailedSoundPlayed = true;
+        //    stageCount = 1;
+        //    return;
+        //}
 
-        if (playerExists && botPawns.Exists(pawn => pawn.gameObject.activeSelf).CompareTo(false) == botPawns.Count - 1 && !levelCompleteSoundPlayed)
+        if (!levelCompleteSoundPlayed && currentStage > stageCount)
         {
             SoundManager.PlaySound(GameAssets.SoundType.success);
             LevelManager.Instance.LoadNextLevel();
+            currentStage = 1;
             levelCompleteSoundPlayed = true;
         }
     }

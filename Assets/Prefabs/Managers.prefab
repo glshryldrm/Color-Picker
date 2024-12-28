@@ -131,6 +131,11 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 3801003982879763214}
     m_Modifications:
+    - target: {fileID: 2954661020730326457, guid: 090ed7fd1ea628c45853aa96e9c0a33f,
+        type: 3}
+      propertyPath: gameManager
+      value: 
+      objectReference: {fileID: 5677141874874303541}
     - target: {fileID: 3915595103490337954, guid: 090ed7fd1ea628c45853aa96e9c0a33f,
         type: 3}
       propertyPath: m_Name
@@ -528,6 +533,16 @@ PrefabInstance:
         type: 3}
       propertyPath: moveDuration
       value: 0.1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8848654567571764082, guid: 8427207b31e10fe4283a207c9ff4297d,
+        type: 3}
+      propertyPath: levelDiffuculty
+      value: 50
+      objectReference: {fileID: 0}
+    - target: {fileID: 8848654567571764082, guid: 8427207b31e10fe4283a207c9ff4297d,
+        type: 3}
+      propertyPath: pawns.Array.data[2].successCount
+      value: 2
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

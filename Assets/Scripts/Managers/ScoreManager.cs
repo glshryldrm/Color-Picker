@@ -5,19 +5,16 @@ using UnityEngine;
 public class ScoreManager : MonoBehaviour
 {
     public static ScoreManager Instance;
-    [SerializeField] List<GridCell> scoredGrids = new List<GridCell>();
+    [SerializeField] GameManager gameManager;
     private void Awake()
     {
         Instance = this;
     }
-    public void FindScoredGrids()
+    public void CalculatePawnsTotalScore()
     {
-        foreach (var cell in GridManager.Instance.gridDictionary.Values)
+        foreach (var pawn in gameManager.botPawns)
         {
-            if (cell.Score != 0)
-            {
-                scoredGrids.Add(cell);
-            }
+            pawn.totalScore += pawn.targetGrid.Score;
         }
     }
 }

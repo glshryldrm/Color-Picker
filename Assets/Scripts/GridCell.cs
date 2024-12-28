@@ -12,6 +12,7 @@ public class GridCell : MonoBehaviour
     [HideInInspector] public Hex hexCoordinates;
     public bool isEmpty = true;
     public int Score;
+    public bool isTarget;
     Rigidbody rb;
 
     private void Awake()

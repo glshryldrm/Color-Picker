@@ -39,16 +39,14 @@ public class AIManager : MonoBehaviour
         if (pawn.botPawns.successCount > 0)
         {
             pawn.targetGrid = successTargets[Random.Range(0, successTargets.Count)];
-            pawn.targetGrid.vector.y = 1.5f;
             pawn.similarity = gameManager.CalculateDistancePercentage(gameManager.targetGrid, pawn.targetGrid);
-
+            
             pawn.targetGrid.isEmpty = false;
 
         }
         else
         {
             pawn.targetGrid = failTargets[Random.Range(0, failTargets.Count)];
-            pawn.targetGrid.vector.y = 1.5f;
             pawn.similarity = gameManager.CalculateDistancePercentage(gameManager.targetGrid, pawn.targetGrid);
 
             pawn.targetGrid.isEmpty = false;
@@ -88,8 +86,9 @@ public class AIManager : MonoBehaviour
         foreach (Pawn pawn in pawns)
         {
             if (pawn.pawnType == Pawn.PawnType.player) continue;
-
-            moveSequence.Append(pawn.transform.DOJump(pawn.targetGrid.vector, jumpPower, numJumps, moveDuration)
+            Vector3 pawnTG = pawn.targetGrid.vector;
+            pawnTG.y = 1.5f;
+            moveSequence.Append(pawn.transform.DOJump(pawnTG, jumpPower, numJumps, moveDuration)
             .OnStepComplete(() =>
             {
                 colorManager.SetParticleColor(pawn.targetGrid);

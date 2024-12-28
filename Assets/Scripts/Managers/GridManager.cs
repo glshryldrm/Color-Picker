@@ -12,6 +12,8 @@ public class GridManager : MonoBehaviour
     [HideInInspector] public float hexWidth;
     [HideInInspector] public float hexHeight;
     public GameObject gizmosPrefab;
+    public List<GridCell> stageTargetColors = new List<GridCell>();
+
     public enum GridShapes
     {
         hexGrid,
@@ -21,7 +23,7 @@ public class GridManager : MonoBehaviour
     public GridShapes gridShape;
     [SerializeField] public Dictionary<Hex, GridCell> gridDictionary = new Dictionary<Hex, GridCell>();
     [SerializeField] List<Hex> gridHexs = new List<Hex>();
-    [SerializeField] List<GridCell> gridCells = new List<GridCell>();
+    public List<GridCell> gridCells = new List<GridCell>();
     private void OnEnable()
     {
         if (!Application.isPlaying) // Editör modundayken çalıştırmak için
@@ -60,10 +62,10 @@ public class GridManager : MonoBehaviour
                 {
                     Hex hexCoordinates = new Hex(q, r);
                     Vector3 position = HexToPosition(hexCoordinates);
-                    Gizmos.DrawWireMesh(gizmosPrefab.GetComponentInChildren<MeshFilter>().sharedMesh,
-                        position,
-                        this.transform.rotation,
-                        gizmosPrefab.GetComponent<Transform>().localScale);
+                    //Gizmos.DrawWireMesh(gizmosPrefab.GetComponentInChildren<MeshFilter>().sharedMesh,
+                    //    position,
+                    //    this.transform.rotation,
+                    //    gizmosPrefab.GetComponent<Transform>().localScale);
                     Gizmos.color = Color.white;
                     GUIStyle style = new GUIStyle();
                     style.alignment = TextAnchor.MiddleCenter;
