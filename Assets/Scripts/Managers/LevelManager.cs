@@ -6,7 +6,7 @@ public class LevelManager : MonoBehaviour
 {
     public static LevelManager Instance;
 
-    [SerializeField] List<string> levels = new List<string>();
+    public List<string> levels = new List<string>();
     [SerializeField] bool loadSceneDirectly = false;
     string levelKey = "levelNo";
 

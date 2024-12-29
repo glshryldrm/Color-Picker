@@ -71,7 +71,7 @@ public class GameManager : MonoBehaviour
         Pawn playerPawnComponent = playerPawn.GetComponent<Pawn>();
         playerPawnComponent.pawnType = Pawn.PawnType.player;
         playerPawnComponent.position = playerPawnPosition;
-        playerPawn.GetComponent<MeshRenderer>().materials[0].color = Color.red;
+        playerPawn.GetComponentInChildren<MeshRenderer>().materials[0].color = Color.red;
         botPawns.Add(playerPawnComponent);
 
         int placedPawns = 0;
@@ -241,7 +241,7 @@ public class GameManager : MonoBehaviour
         pi.color = Color.white;
         panel.SetActive(true);
 
-        yield return new WaitForSeconds(2f);
+        yield return new WaitForSeconds(.5f);
         StartCoroutine(StartCountdown());
         targetGrid.color.a = 1f;
         pi.color = targetGrid.color;
@@ -368,6 +368,8 @@ public class GameManager : MonoBehaviour
     }
     void CheckStageState()
     {
+        if (currentStage > stageCount)
+            return;
 
         stageText.text = "Stage " + currentStage.ToString();
 
@@ -389,12 +391,24 @@ public class GameManager : MonoBehaviour
         //    return;
         //}
 
+
         if (!levelCompleteSoundPlayed && currentStage > stageCount)
         {
-            SoundManager.PlaySound(GameAssets.SoundType.success);
-            LevelManager.Instance.LoadNextLevel();
-            currentStage = 1;
-            levelCompleteSoundPlayed = true;
+            panel.SetActive(false);
+            UIManager.Instance.ActivateScorePanel(true);
+            StartCoroutine(LoadNextLevelAfterDelay());
+
         }
+    }
+    private IEnumerator LoadNextLevelAfterDelay()
+    {
+        yield return new WaitForSeconds(3f);
+
+        // Yeni seviyeye geç
+        SoundManager.PlaySound(GameAssets.SoundType.success);
+        LevelManager.Instance.LoadNextLevel();
+        currentStage = 1;
+        levelCompleteSoundPlayed = true;
+        UIManager.Instance.ActivateScorePanel(false);
     }
 }
